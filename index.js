@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const fs = require("fs");
-const tokenfile = require("./token.json");
+const token = process.env.token
 const bot = new Discord.Client({disableEveryone: true}); // Bot se defines kao bot
 const mongoose = require("mongoose");
 mongoose.connect('mongodb://localhost:27017/Reports',  { useNewUrlParser: true } ); //Povezivanje na Mongoose.
@@ -44,4 +44,4 @@ fs.readdir("./events/", (err, files) => {
   });
 });
 //Bot se loginuje uz pomoc tokena iz tokenfile.
-bot.login(tokenfile.token);
+bot.login(token);
