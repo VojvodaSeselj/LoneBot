@@ -44,4 +44,4 @@ fs.readdir("./events/", (err, files) => {
   });
 });
 //Bot se loginuje uz pomoc tokena iz tokenfile.
-bot.login(token);
+bot.login(process.env.token);
