@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const fs = require("fs");
 const ms = require("ms");
 const Warn = require("../../models/warn.js");
+let Xp = require("../../models/xp.js");
 
 module.exports.run = async(bot, message, args) => {
     if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ VC Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
@@ -18,6 +19,7 @@ module.exports.run = async(bot, message, args) => {
           },
         })
         let roles = iUser.roles.map(role => role.toString());
+        let curlvl = xp.Level;
         let userinfoembed = new Discord.RichEmbed()
             .setAuthor(iUser.user.tag, iUser.user.avatarURL)
             .setThumbnail(uicon)
@@ -26,6 +28,7 @@ module.exports.run = async(bot, message, args) => {
             .addField("ID", iUser.id, true)
             .addField("Joined Server", iUser.joinedAt.toDateString(), true)
             .addField("Number of Warnings", `${warnings.length}`, true)
+            .addField("Level", curlvl, true)
             .addField("Roles", roles.join(" **|** "), true);
 
         return message.channel.send(userinfoembed);

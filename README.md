@@ -1,6 +1,12 @@
 //URADITI
 
-1. Napraviti Unmute za sve komande koje to trebaju imati. - Uradjeno
-2. Urediti XP sistem.
-3. Proveriti sve Rich Embede.
-4. Napraviti da neki specijalan role moze napraviti private sobu pomocu komande,i staviti ime koje zeli i broj slotova koji on zeli.
+`Srediti  .help komandu i dodati nove komande,izbaciti stare.`
+`Srediti youtube komande,po mogucnosti napraviti skroz nove.`
+`Proveriti sve komande`
+`Proveriti potreban role za svaku komandu i urediti po potrebi`
+`Srediti XP system nacin na koji se XP dobija`
+`Dodati jos novih komandi`
+`Napraviti coins system i shop u kojem mogu kupiti razne rankove`
+`Serditi bug da se mongoose ne moze connect na heroku koristiti mLab`
+`Proveriti evente i urediti ih`
+`Urediti tako da neke komande i stvari rade samo na mom serveru`

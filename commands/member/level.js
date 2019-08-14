@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 let Xp = require("../../models/xp.js");
 
 module.exports.run = async(bot, message, args) => {
-
+    if (!message.guild.id === "585827148212862978") return;
     let author = message.author.id;
     let guild = message.guild.id;
     let xp = await Xp.findOne({

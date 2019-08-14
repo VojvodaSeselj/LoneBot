@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const Confession = require("../../models/confession.js");
 
 module.exports.run = async(bot, message, args) => {
+  if (!message.guild.id === "585827148212862978") return;
   if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .confess <Confession>`);
   let cMessage = args.slice(0).join(" ")
   if (!cMessage) return message.channel.send("You need to put your confession!");
