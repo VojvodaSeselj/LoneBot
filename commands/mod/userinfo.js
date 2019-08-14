@@ -5,12 +5,14 @@ const Warn = require("../../models/warn.js");
 let Xp = require("../../models/xp.js");
 
 module.exports.run = async(bot, message, args) => {
+    if (message.guild.id === "585827148212862978") {
     if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ VC Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
     if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .userinfo <User>`);
     let iUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!iUser) return message.reply("User not found!"); {
         let uicon = iUser.user.displayAvatarURL;
         let guild = message.guild.id;
+        let about = iUser.user.id
         let warnings = await Warn.find({
           Guild: guild,
           WarnedUser: {
@@ -19,6 +21,18 @@ module.exports.run = async(bot, message, args) => {
           },
         })
         let roles = iUser.roles.map(role => role.toString());
+        let xp = await Xp.findOne({
+          Guild: guild,
+          ID: about
+        });
+        if (!xp) {
+          xp = new Xp({
+            Name: about,
+            Guild: guild,
+            Xp: 0,
+            Level: 0
+          });
+        }
         let curlvl = xp.Level;
         let userinfoembed = new Discord.RichEmbed()
             .setAuthor(iUser.user.tag, iUser.user.avatarURL)
@@ -33,6 +47,7 @@ module.exports.run = async(bot, message, args) => {
 
         return message.channel.send(userinfoembed);
     }
+  }
 };
 
 module.exports.help = {

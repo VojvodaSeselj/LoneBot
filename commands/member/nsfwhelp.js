@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 module.exports.run = async(bot, message, args) => {
-        if (message.guild.id === "585827148212862978") return;
+        if (message.guild.id === "585827148212862978") {
         let nsfwhelpembed = new Discord.RichEmbed()
             .setDescription("NSFW Help")
             .setColor("#000000")
@@ -13,7 +13,7 @@ module.exports.run = async(bot, message, args) => {
             .addField("**.anal**", "Send anal image.")
             .addField("**.thigh**", "Send thigh image.");
             message.channel.send(nsfwhelpembed);
-
+          }
 }
 module.exports.help = {
     name: "nsfwhelp"

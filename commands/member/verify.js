@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 module.exports.run = async(bot, message, args) => {
-    if (!message.guild.id === "585827148212862978") return;
+    if (message.guild.id === "585827148212862978") {
     if (!message.member.roles.some(r=>["Newbie"].includes(r.name))) return message.delete(1000);
     let vUser = message.member;
     let vRole = message.guild.roles.find(role => role.name === "Member");
@@ -22,6 +22,7 @@ module.exports.run = async(bot, message, args) => {
     if (!vUser.roles.has(vRole.id))
     await(vUser.addRole(vRole.id));
     await(vUser.removeRole(rRole.id))
+  }
 }
 
 module.exports.help = {
