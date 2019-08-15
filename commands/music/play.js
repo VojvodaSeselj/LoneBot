@@ -47,7 +47,6 @@ function end(bot, ops, dispatcher) {
             let vc = bot.guilds.get(dispatcher.guildID).me.voiceChannel;
             if (vc) vc.leave();
         }, 30000);
-      }
     }
 }
 
