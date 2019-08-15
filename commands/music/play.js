@@ -43,7 +43,7 @@ function end(bot, ops, dispatcher) {
     } else {
         ops.active.delete(dispatcher.guildID);
         message.channel.send("Music queue is empty,please request song within 30seconds or bot will disconnect.")
-        await setTimeout(function() {
+        setTimeout(function() {
             let vc = bot.guilds.get(dispatcher.guildID).me.voiceChannel;
             if (vc) vc.leave();
         }, 30000);
