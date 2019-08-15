@@ -42,8 +42,12 @@ function end(bot, ops, dispatcher) {
         play(bot, ops, fetched);
     } else {
         ops.active.delete(dispatcher.guildID);
-        let vc = bot.guilds.get(dispatcher.guildID).me.voiceChannel;
-        if (vc) vc.leave();
+        message.channel.send("Music queue is empty,please request song within 30seconds or bot will disconnect.")
+        await setTimeout(function() {
+            let vc = bot.guilds.get(dispatcher.guildID).me.voiceChannel;
+            if (vc) vc.leave();
+        }, 30000);
+      }
     }
 }
 
