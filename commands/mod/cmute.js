@@ -6,12 +6,16 @@ const Cmute = require("../../models/cmute.js");
 module.exports.run = async(bot, message, args) => {
     if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
     if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .cmute <User> <Reason>`);
+
     let mUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!mUser) return message.reply("User not found!");
     if (mUser.roles.some(r=>["Lonewolf", "⚒ Moderator ⚒", "⚒ VC Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("You can't mute this user!");
+    
     let cmuterole = message.guild.roles.find(role => role.name === "ChatMuted");
+
     let mReason = args.slice(1).join(" ");
     if (!mReason) return message.reply("Please supply a reason.");
+
     if (!cmuterole) {
         try {
             cmuterole = await message.guild.createRole({
