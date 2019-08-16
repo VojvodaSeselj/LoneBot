@@ -14,7 +14,7 @@ module.exports.run = async(bot, message, args) => {
             .addField("**.level**", "Shows your level and xp.")
             .addField("**.report [user] [reason]**", "Report somebody with reason.")
             .addField("**.musichelp**", "Give you a list of all music commands.")
-            .addField("**.nsfwhelp**", "Give you a list of all nsfw commands.");
+            if (message.guild.id === "585827148212862978") .addField("**.nsfwhelp**", "Give you a list of all nsfw commands.");
             message.channel.send(helpembed);
 
         let mod = message.guild.roles.find(role => role.name === "⚒ Moderator ⚒");
