@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 
 module.exports.run = async(bot, message, args) => {
-        let mojGuild = bot.guilds.get("585827148212862978");
+        const mojGuild = bot.guilds.get("585827148212862978");
 
         let helpembed = new Discord.RichEmbed()
             .setDescription("Commands Help")
@@ -15,9 +15,7 @@ module.exports.run = async(bot, message, args) => {
             .addField("**.level**", "Shows your level and xp.")
             .addField("**.report [user] [reason]**", "Report somebody with reason.")
             .addField("**.musichelp**", "Give you a list of all music commands.")
-            if(message.guild.id  == mojGuild){
-            .addField("**.nsfwhelp**", "Give you a list of all nsfw commands.");
-            }
+            if(message.guild.id  == mojGuild) helpembed.addField("**.nsfwhelp**", "Give you a list of all nsfw commands.");
             message.channel.send(helpembed);
 
         let mod = message.guild.roles.find(role => role.name === "⚒ Moderator ⚒");
