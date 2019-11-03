@@ -1,23 +1,36 @@
-//URADITI
+# Welcome
 
-`Srediti .help komandu i dodati nove komande,izbaciti stare.` - Uradjeno
-`Srediti youtube komande,po mogucnosti napraviti skroz nove.` - Odustao
-`Proveriti sve komande`
-`Proveriti potreban role za svaku komandu i urediti po potrebi`
-`Srediti XP system nacin na koji se XP dobija` - Uradjeno
-`Dodati jos novih komandi, Dodati botconfig folder sa komandama i games.` - Uradjeno
-`Napraviti coins system i shop u kojem mogu kupiti razne rankove` - Coins napravljeno i igre,jos fali shop.
-`Serditi bug da se mongoose ne moze connect na heroku koristiti mLab` - Sredjeno
-`Proveriti evente i urediti ih`
-`Urediti tako da neke komande i stvari rade samo na mom serveru` - Odustao
-`Dodati setlogschannel komandu` - Sredjeno
-`Dodati setmoderatorroles komandu`
-`Dodati setowenerrole komandu`
-`Dodati da samo moderator i owner mogu koristiti komande`
-`Napraviti website na kome ce biti u pisanoj formi kako podesiti bota`
-`Staviti kada neko ne ukuca pravilno komandu ispred komande stavi guild.Prefix` - Uradjeno.
-`Staviti u komande logs kanal od guild.LogsChannel` - Uradjeno.
-- VERY IMPORTANT : `Napraviti event i commmand handler sa alliases od TheSourceCode` - Uradjeno, i napravljen event handler.
-`Napraviti temp mute za chat i voice u mute <user> voice/chat [time]`
-`Napraviti cooldown za komande preko database za svakog korisnika!`
-`Napraviti poll komandu.Example .poll Should i make this bot publish?`
+Welcome to `LoneBot`. This is a bot written in Discord.JS utilizing MongoDB using the npm package `mongoose`
+
+## Plans
+
+* [ ] Economy system
+  * [x] Work command
+  * [x] Pay command
+  * [x] Balance dommand
+  * [x] Leaderboard command
+  * [x] Withdraw & deposit commands
+  * [x] Steal command
+  * [x] Coinflip & Slots & Roulette commands
+  * [x] Give money & remove money commands
+  * [ ] Shop command (*Server owners have option to customize their shops*)
+* [ ] The basics  
+    * [x] Example
+    * [x] Cooldown (*Done to all commands in message event,idea is to make it store time commands are used in database*)
+    * [x] Alias
+    * [x] Help command (*Send all commands if memeber does not specify command he needs help with*)
+    * [x] Level and XP System (*XP Gained from messages*)
+    * [ ] Rewards based on levels
+* [x] Moderation
+    * [x] Ban & UnBan
+    * [x] Kick
+    * [x] Clear
+    * [x] Deafen & UnDeafen
+    * [x] Mute & UnMute (*Can specify either to be chat or voice mute*)
+    * [x] Warn & WarnLevel
+    * [x] UserInfo
+    * [x] And more commands
+* [x] Owner
+    * [x] Setup command (*Let server owner customize some parts of the bot for their server such as auto roles,admin roles,mod roles etc...*)
+    * [x] Add & Remove role
+    * [x] And more commands
