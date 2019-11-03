@@ -2,3 +2,4 @@ node_modules
 .env
 node-pre-gyp
 node_modules
+npm-debug.log
