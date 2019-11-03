@@ -1,6 +1,7 @@
 const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const token = process.env.token
+const mongodbconnect = process.env.mongodbconnect
 const bot = new Client({disableEveryone: true}); // Bot se defines kao bot
 
 const mongoose = require("mongoose");
