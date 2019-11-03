@@ -1,17 +1,33 @@
-const Discord = require("discord.js");
-const fs = require("fs");
-const ms = require("ms");
 const Warn = require("../../models/warn.js");
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
-    if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ VC Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
-    if (!message.member.hasPermission("KICK_MEMBERS")) return message.reply("You don't have required permissions!");
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .warnlevel <User>`);
+module.exports = {
+    name: "warnlevel",
+    aliases: ["warnlvl", "wlevel"],
+    category: "Moderation",
+    description: "Show member's warn level.",
+    usage: "WarnLevel <User>",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: guildid
+    });
+
+    if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+      return message.reply("Sorry, you don't have permissions to use this!");
+    }
+
+    if (!args[0]) {
+      return message.reply("You need to provide a member to kick!").then(m => m.delete(5000));
+    }
+
     let wUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!wUser) return message.channel.send("User not found!");
-    let guild = message.guild.id;
+    if (!wUser) {
+      return message.channel.send("User not found!");
+    }
+
     let warnings = await Warn.find({
-      Guild: guild,
+      Guild: guildid,
       WarnedUser: {
         Username: wUser.user.username,
         ID: wUser.user.id,
@@ -19,8 +35,5 @@ module.exports.run = async(bot, message, args) => {
     })
 
     message.reply(`<@${wUser.id}> has ${warnings.length} warnings.`)
-}
-
-module.exports.help = {
-    name: "warnlevel"
+  }
 }

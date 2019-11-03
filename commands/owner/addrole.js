@@ -1,11 +1,20 @@
 const Discord = require("discord.js");
-const mongoose = require("mongoose");
 const AddRole = require("../../models/addrole.js");
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
-
-    if (!message.member.roles.some(r=>["Lonewolf", "God"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .addrole <User> <Role>`);
+module.exports = {
+    name: "addrole",
+    aliases: [],
+    category: "Owner",
+    description: "Add role to member.",
+    usage: "AddRole <User> <Role-Name>",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: guildid
+    });
+    if (!message.member.roles.some(r=>["Lonewolf", "God", "@everyone", "everyone", ""].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
+    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: ${guild.Prefix}${module.exports.usage}`);
     let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!rUser) return message.channel.send("User not found!");
     let wrole = args.slice(1).join(" ")
@@ -16,7 +25,7 @@ module.exports.run = async(bot, message, args) => {
 
     let roleembed = new Discord.RichEmbed()
         .setAuthor(rUser.user.tag, rUser.user.avatarURL)
-        .setColor("#0785ed")
+        .setColor("#00c3df")
         .addField("Role Given By", `${message.author}`)
         .addField("Role Given", wrole);
 
@@ -45,8 +54,5 @@ module.exports.run = async(bot, message, args) => {
     addrole.save()
         .then(result => console.log(result))
         .catch(err => console.log(err));
-}
-
-module.exports.help = {
-    name: "addrole"
+    }
 }

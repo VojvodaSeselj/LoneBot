@@ -1,8 +1,4 @@
-const Discord = require("discord.js");
-
-module.exports.run = async (bot, member) => {
-  (e) => console.error(e);
-}
-module.exports.help = {
-    name: "error"
+module.exports = async (bot, error) => {
+  bot.channels.get("624661998646460416").send(error.name + ":" + error.stack);
+  console.log(error);
 }

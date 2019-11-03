@@ -1,27 +1,46 @@
-const Discord = require("discord.js");
-const mongoose = require("mongoose");
+const { RichEmbed } = require("discord.js");
+const { getMember } = require("../../functions.js");
+const { stripIndents } = require("common-tags");
 const Report = require("../../models/report.js");
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .report <User> <Reason>`);
-    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!rUser) return message.reply("User not found!");
-    let rReason = args.slice(1).join(" ");
-    if (!rReason) return message.channel.send("You need to supply a reason!");
+module.exports = {
+    name: "report",
+    aliases: [],
+    category: "Member",
+    description: "Report a member.",
+    usage: "Report <User> <Reason>",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: guildid
+    });
+    if (!args[0]) {
+      return message.reply("You need to provide a member to report!").then(m => m.delete(5000));
+    }
+    if (!args[1]) {
+      return message.reply("You need to provide a reason for reporting this member!").then(m => m.delete(5000));
+    }
+    const rUser = await getMember(message, args[0]);
+    if (!rUser) {
+      return message.reply("User not found!").then(m => m.delete(5000))
+    }
+    const reason = args.slice(1).join(" ");
+    let embed = new RichEmbed()
+        .setColor("#00c3df")
+        .setThumbnail(rUser.user.displayAvatarURL)
+        .setFooter(message.member.tag, message.author.displayAvatarURL)
+        .setDescription(stripIndents`**Reported User** ${rUser.user} **with ID** ${rUser.user.id}
+        **Reported By** ${message.member} **with ID** ${message.member.id}
+        **Time** ${message.createdAt}
+        **Reason** ${reason}
+        **Channel** ${message.channel}`);
 
-    let reportembed = new Discord.RichEmbed()
-        .setAuthor(rUser.user.tag, rUser.user.avatarURL)
-        .setColor("#78bab0")
-        .addField("Reported By", `${message.author}`)
-        .addField("Channel", message.channel)
-        .addField("Time", message.createdAt)
-        .addField("Reason", `${rReason}`)
-
-    let logschannel = message.guild.channels.find(channel => channel.name === "moderation-logs");
-    if (!logschannel) return message.reply("Couldn't find reports channel.");
+    let logschannel = message.guild.channels.find(channel => channel.name === guild.LogsChannel);
+    if (!logschannel) return message.reply("Couldn't find logs channel.");
 
     message.delete().catch(O_o => {});
-    logschannel.send(reportembed);
+    logschannel.send(embed);
 
     const report = new Report({
         Guild: message.guild.id,
@@ -33,7 +52,7 @@ module.exports.run = async(bot, message, args) => {
           Username: message.author.username,
           ID: message.author.id,
         },
-        Reason: rReason,
+        Reason: reason,
         Time: message.createdAt
 
     });
@@ -41,9 +60,5 @@ module.exports.run = async(bot, message, args) => {
     report.save()
         .then(result => console.log(result))
         .catch(err => console.log(err));
-
-}
-
-module.exports.help = {
-    name: "report"
+      }
 }

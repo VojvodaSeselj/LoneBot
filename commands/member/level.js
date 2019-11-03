@@ -1,44 +1,45 @@
-const Discord = require("discord.js");
-const mongoose = require("mongoose");
-let Xp = require("../../models/xp.js");
+const { RichEmbed } = require("discord.js");
+const { stripIndents } = require("common-tags");
+const User = require("../../models/user.js");
 
-module.exports.run = async(bot, message, args) => {
-    if (message.guild.id === "585827148212862978") {
-    let author = message.author.id;
-    let guild = message.guild.id;
-    let xp = await Xp.findOne({
-      Guild: guild,
-      ID: author
+module.exports = {
+    name: "level",
+    aliases: [],
+    category: "Member",
+    description: "Shows your level and XP progress.",
+    usage: "Level",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let user = await User.findOne({
+      Guild: guildid,
+      ID: message.author.id
     });
-    if (!xp) {
-      xp = new Xp({
-        Name: message.author.username,
-        Guild: guild,
-        Xp: 0,
-        Level: 0
+    if (!user) {
+      user = new User({
+        Guild: guildid,
+        Username: message.author.username,
+        ID: message.author.id,
+        XP: 0,
+        Level: 1,
+        Cash: 0,
+        Bank: 1000,
+        Joined: message.author.joinedAt
       });
     }
-    let curxp = xp.Xp;
-		let curlvl = xp.Level;
-    let nxtLvlXp = curlvl * 1000;
-    let difference = nxtLvlXp - curxp;
-    let uicon = message.author.displayAvatarURL;
-
-    let lvlEmbed = new Discord.RichEmbed()
-        .setAuthor(message.author.tag, message.author.avatarURL)
-        .setColor("#b84db6")
-        .setThumbnail(uicon)
-        .addField("Level", curlvl, true)
-        .addField("XP", curxp, true)
-        .addField("XP til level up", difference, true)
-
+    let currentXp = user.XP;
+    let currentLevel = user.Level;
+    let untilNext = 5 * ((user.Level + 1) ** 2) + 50 * (user.Level + 1) + 100
+    let lvlEmbed = new RichEmbed()
+        .setColor("#00c3df")
+        .setThumbnail(message.guild.iconURL)
+        .setFooter(message.author.username, message.author.displayAvatarURL)
+        .setDescription(stripIndents`**Level Information**
+          **Level ${currentLevel} | 1000**
+          **XP ${currentXp}**
+          **You need ${untilNext - currentXp} to reach next level!**
+          **Reminder: You will not gain XP while being chat muted!**`)
     message.channel.send(lvlEmbed);
 
-    xp.save()
-        .catch(err => console.log(err));
-    }
-}
-
-module.exports.help = {
-    name: "level"
+    user.save().catch(err => console.log(err));
+  }
 }

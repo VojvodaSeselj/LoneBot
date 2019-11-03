@@ -1,47 +1,37 @@
-const Discord = require("discord.js");
+const { Client, Collection } = require("discord.js");
 const fs = require("fs");
 const token = process.env.token
-const bot = new Discord.Client({disableEveryone: true}); // Bot se defines kao bot
+const bot = new Client({disableEveryone: true}); // Bot se defines kao bot
+
 const mongoose = require("mongoose");
-mongoose.connect('mongodb://localhost:27017/Reports',  { useNewUrlParser: true } ); //Povezivanje na Mongoose.
+const dbOptions = {
+  useNewUrlParser: true,
+  autoIndex: false,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 500,
+  poolSize: 5,
+  connectTimeoutMS: 10000,
+  family: 4
+};
+mongoose.connect(`mongodb+srv://Alexei:lopta323@bot-cluster-mlqro.mongodb.net/Reports?retryWrites=true&w=majority`, dbOptions);
+mongoose.set('useFindAndModify', false);
+mongoose.Promise = global.Promise;
+mongoose.connection.on("connected", () => {
+  console.log("Database - Mongoose connection successfully opened!");
+});
+mongoose.connection.on("err", err => {
+  console.error(`Database - Mongoose connection error: \n ${err.stack}`);
+});
+mongoose.connection.on("disconnected", () => {
+  console.log("Database - Mongoose connection disconnected");
+});
 
 //Handler za komande
-bot.commands = new Discord.Collection();
-fs.readdir(`./commands/`, (err, folders) => {
-  folders.forEach(folder => {
-    fs.readdir(`./commands/${folder}`, (err, files) => {
-      if(err) console.log(err);
-
-      let jsfile = files.filter(f => f.split(".").pop() === "js")
-      if(jsfile.length <= 0){
-        console.log("Couldn't find commands.");
-        return;
-      }
-      jsfile.forEach((f, i) => {
-        let props = require(`./commands/${folder}/${f}`);
-        console.log(`C - ${f} loaded.`);
-        bot.commands.set(props.help.name, props);
-      });
-    });
-  });
-});
-//Handler za evente
-bot.events = new Discord.Collection()
-fs.readdir("./events/", (err, files) => {
-  if(err) console.log(err);
-
-  let jsfile = files.filter(f => f.split(".").pop() === "js")
-  if(jsfile.length <= 0){
-    console.log("Couldn't find events.");
-    return;
-  }
-
-  jsfile.forEach((f, i) => {
-    let props = require(`./events/${f}`);
-    console.log(`E - ${f} loaded.`);
-    bot.events.set(props.help.name, props);
-    bot.on(props.help.name, props.run.bind(null, bot));
-  });
+bot.commands = new Collection();
+bot.aliases = new Collection();
+bot.events = new Collection();
+["command", "event"].forEach(handler => {
+    require(`./handlers/${handler}`)(bot);
 });
 //Bot se loginuje uz pomoc tokena iz tokenfile.
-bot.login(process.env.token);
+bot.login(token);

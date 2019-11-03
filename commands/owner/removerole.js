@@ -1,10 +1,20 @@
 const Discord = require("discord.js");
-const mongoose = require("mongoose");
 const RemoveRole = require("../../models/removerole.js");
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
+module.exports = {
+    name: "removerole",
+    aliases: [],
+    category: "Owner",
+    description: "Remove role from member.",
+    usage: "RemoveRole <User> <Role-Name>",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: guildid
+    });
     if (!message.member.roles.some(r=>["Lonewolf", "God"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .removerole <User> <Role>`);
+    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: ${guild.Prefix}${module.exports.usage}`);
     let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
     if (!rUser) return message.channel.send("User not found!");
     let wrole = args.slice(1).join(" ")
@@ -15,7 +25,7 @@ module.exports.run = async(bot, message, args) => {
 
     let roleembed = new Discord.RichEmbed()
         .setAuthor(rUser.user.tag, rUser.user.avatarURL)
-        .setColor("#ff0000")
+        .setColor("#00c3df")
         .addField("Role Removed By", `${message.author}`)
         .addField("Role Removed", wrole);
 
@@ -45,7 +55,4 @@ module.exports.run = async(bot, message, args) => {
         .then(result => console.log(result))
         .catch(err => console.log(err));
 }
-
-module.exports.help = {
-    name: "removerole"
 }

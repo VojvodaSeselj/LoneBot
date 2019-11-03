@@ -1,19 +1,45 @@
 const Discord = require("discord.js");
-const superagent = require("superagent");
+const search = require('random-puppy')
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
-  if (message.channel.id === "585993258589618216") {
-  //if (message.channel.id === "606102226468864000") {
-    superagent.get('https://nekobot.xyz/api/image')
-    .query({ type: 'pgif'})
-    .end((err, response) => {
-      message.channel.send({ file: response.body.message });
+module.exports = {
+    name: "porn",
+    aliases: [],
+    category: "NSFW",
+    description: "Shows random porn gif.",
+    usage: "Porn",
+    run: async (bot, message, args) => {
+    let guildid = message.guild.id;
+    let defaultprefix = "."
+    let guild = await Guild.findOne({
+      Guild: guildid
     });
-  } else {
-    message.channel.send(`You can use this command only in <#585993258589618216> channel!`)
-  }
-}
+    if (guild.Nsfw === "true") {
+    if (!message.channel.nsfw) return message.channel.send(":underage: You need to be in an NSFW channel to use this command.");
+    let key = [
+      "titfuck",
+      "orgy",
+      "orgasm",
+      "fuck",
+      "pussyfuck",
+      "assfuck",
+      "penetration",
+      "penetrate",
+      "sex",
+      "sexy"
+    ]
 
-module.exports.help = {
-    name: "porn"
+    let res = key[Math.floor(Math.random()*key.length)]
+    let pornEmbed = new Discord.RichEmbed()
+    .setTitle("Porn")
+    .setDescription("Hope you like it :wink:")
+    .setFooter(`Requested by ${message.author.username}`)
+    .setTimestamp()
+
+    search(res).then(url => {
+      pornEmbed.setImage(url)
+      message.channel.send({embed: pornEmbed})
+    })
+  } else if (guild.Nsfw === "false") return;
+}
 }

@@ -1,9 +1,9 @@
-const Discord = require("discord.js");
+const { RichEmbed } = require("discord.js");
 const fs = require("fs");
 const adWords = [`discord.gg`, `.gg/`, `.gg /`, `. gg /`, `. gg/`, `discord .gg /`, `discord.gg /`, `discord .gg/`, `discord .gg`, `discord . gg`, `discord. gg`, `discord gg`, `discordgg`, `discord gg /`]
 const Warn = require("../models/warn.js");
 
-module.exports.run = async (bot, oldMessage, newMessage) => {
+module.exports = async (bot, oldMessage, newMessage) => {
   //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
   if (newMessage.channel.type === "dm") return;
   if (newMessage.author.bot) return;
@@ -14,10 +14,10 @@ module.exports.run = async (bot, oldMessage, newMessage) => {
   if (adWords.some(word => newMessage.content.toLowerCase().includes(word))) {
     let wUser = newMessage.author;
 
-    let warnembed = new Discord.RichEmbed()
+    let warnembed = new RichEmbed()
         .setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
         .setColor("#6b0808")
-        .addField("Warned By", "LoneBot")
+        .addField("Warned By", oldMessage.me.tag)
         .addField("Reason", "Advertisement");
 
     let logschannel = oldMessage.guild.channels.find(channel => channel.name === "moderation-logs");
@@ -55,8 +55,4 @@ module.exports.run = async (bot, oldMessage, newMessage) => {
         oldMessage.channel.send(`<@${wUser.id}> has been banned for getting warned third time!`)
         }
     }
-}
-
-module.exports.help = {
-    name: "messageUpdate"
-}
+  }

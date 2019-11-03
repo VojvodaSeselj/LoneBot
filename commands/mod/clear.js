@@ -1,22 +1,38 @@
-const Discord = require("discord.js");
+const Guild = require("../../models/guild.js");
 
-
-module.exports.run = async(bot, message, args) => {
-    if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .clear <Number of lines>`);
-
-    let clearMsgs = parseInt(args[0]);
-
-    if(isNaN(clearMsgs)) return message.channel.send("Make sure the amount is a number!");
-    if(clearMsgs >= 100) return message.channel.send("Make sure that you specify an amount lower than 100!");
-
-    if(clearMsgs < 100){
-    message.channel.bulkDelete(clearMsgs + 1).then(msg => {
-    message.channel.send(`Deleted ${clearMsgs} messages!`).then(msg => msg.delete(5000));
+module.exports = {
+    name: "clear",
+    aliases: ["clr"],
+    category: "Moderation",
+    description: "Clear chat.",
+    usage: "Clear <NumberOfLines>",
+    example: "Clear 69",
+    run: async (bot, message, args) => {
+    let guild = await Guild.findOne({
+      Guild: message.guild.id
     });
-  }
-}
+    if (message.deletable) message.delete();
 
-module.exports.help = {
-    name: "clear"
+    if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+      return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
+    }
+    if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) {
+      return message.reply("I do not have permission to clear messages.").then(m => m.delete(5000));
+    }
+    if (!args[0]) {
+      return message.reply("You need to supply a number of messages you want to delete.(Max: 100)").then(m => m.delete(5000));
+    }
+    if (isNaN(args[0])) {
+      return message.reply('You need to supply a number!').then(m => m.delete(5000))
+    }
+
+    message.channel.send("Clearing " + args[0] + "messages :exclamation:").then(m => m.delete(2000))
+    setTimeout(() => {
+      message.channel.bulkDelete(args[0])
+      .then(() => {
+          message.channel.send("Cleared " + args[0] + " messages!").then(m => m.delete(1500))
+      })
+      .catch(err => message.reply("Messages older than 14 days cannot be deleted!").then(m => m.delete(5000)))
+    }, 5000);
+  }
 }

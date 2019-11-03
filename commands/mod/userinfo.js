@@ -1,55 +1,67 @@
-const Discord = require("discord.js");
-const fs = require("fs");
-const ms = require("ms");
+const { RichEmbed } = require("discord.js");
+const { stripIndents } = require("common-tags");
+const { getMember } = require("../../functions.js");
 const Warn = require("../../models/warn.js");
-let Xp = require("../../models/xp.js");
+const User = require("../../models/user.js");
+const Guild = require("../../models/guild.js");
 
-module.exports.run = async(bot, message, args) => {
-    if (message.guild.id === "585827148212862978") {
-    if (!message.member.roles.some(r=>["Lonewolf", "God", "⚒ Moderator ⚒", "⚒ VC Moderator ⚒", "⚒ Chat Moderator ⚒"].includes(r.name))) return message.reply("Sorry, you don't have permissions to use this!");
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: .userinfo <User>`);
-    let iUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
-    if (!iUser) return message.reply("User not found!"); {
-        let uicon = iUser.user.displayAvatarURL;
-        let guild = message.guild.id;
-        let about = iUser.user.id
+module.exports = {
+    name: "userinfo",
+    aliases: [],
+    category: "Moderation",
+    description: "Shows user's informations.",
+    usage: "UserInfo <User>",
+    run: async (bot, message, args) => {
+        if (message.deletable) message.delete()
+
+        if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+          return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
+        }
+        if (!args[0]) {
+          return message.reply("You need to provide a member to see their informations!").then(m => m.delete(5000));
+        }
+        const userInfo = await getMember(message, args[0]);
+        if (!userInfo) {
+          return message.reply("Couldn't find that member!").then(m => m.delete(5000));
+        }
         let warnings = await Warn.find({
-          Guild: guild,
+          Guild: message.guild.id,
           WarnedUser: {
-            Username: iUser.user.username,
-            ID: iUser.user.id,
+            Username: userInfo.user.username,
+            ID: userInfo.user.id,
           },
         })
-        let roles = iUser.roles.map(role => role.toString());
-        let xp = await Xp.findOne({
-          Guild: guild,
-          ID: about
+        let roles = userInfo.roles.map(role => role.toString());
+        let user = await User.findOne({
+          Guild: message.guild.id,
+          ID: userInfo.user.id
         });
-        if (!xp) {
-          xp = new Xp({
-            Name: about,
-            Guild: guild,
-            Xp: 0,
-            Level: 0
+        if (!user) {
+          user = new User({
+            Guild: message.guild.id,
+            Username: userInfo.user.username,
+            ID: userInfo.user.id,
+            XP: 0,
+            Level: 1,
+            Coins: 1000,
+            Joined: userInfo.joinedAt
           });
         }
-        let curlvl = xp.Level;
-        let userinfoembed = new Discord.RichEmbed()
-            .setAuthor(iUser.user.tag, iUser.user.avatarURL)
-            .setThumbnail(uicon)
-            .setColor("#1ec8ce")
-            .addField("Username", iUser.user.username, true)
-            .addField("ID", iUser.id, true)
-            .addField("Joined Server", iUser.joinedAt.toDateString(), true)
-            .addField("Number of Warnings", `${warnings.length}`, true)
-            .addField("Level", curlvl, true)
-            .addField("Roles", roles.join(" **|** "), true);
-
+        user.save().catch(err => console.log(err));
+        let userinfoembed = new RichEmbed()
+            .setColor("#00c3df")
+            .setThumbnail(userInfo.user.displayAvatarURL)
+            .setFooter(message.author.username, message.author.displayAvatarURL)
+            .setDescription(stripIndents`**User's informations**
+            **Username** ${userInfo.user.username}
+            **Tag** ${userInfo.user.discriminator}
+            **ID** ${userInfo.user.id}
+            **Joined** ${userInfo.joinedAt.toDateString()}
+            **Number Of Warnings** ${warnings.length}
+            **Level** ${user.Level}
+            **XP** ${user.XP}
+            **Roles**
+            ${roles.join(" **|** ")}`)
         return message.channel.send(userinfoembed);
-    }
   }
-};
-
-module.exports.help = {
-    name: "userinfo"
 }
