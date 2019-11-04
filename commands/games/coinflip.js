@@ -22,6 +22,7 @@ module.exports = {
     ID: message.author.id
   });
 
+  betside = betside.toLowerCase();
   if (betside == "h" || betside.includes("heads")) betside = 0;
   else if (betside == "t" || betside.includes("tails")) betside = 1;
   else return message.reply("You must chose between Heads and Tails.");

@@ -6,6 +6,7 @@ const bot = new Client({disableEveryone: true}); // Bot se defines kao bot
 
 const mongoose = require("mongoose");
 const dbOptions = {
+  useUnifiedTopology: true,
   useNewUrlParser: true,
   autoIndex: false,
   reconnectTries: Number.MAX_VALUE,
