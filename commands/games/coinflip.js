@@ -9,40 +9,42 @@ module.exports = {
     description: "Gamble on which side coin will land.",
     usage: "CoinFlip <Heads or Tails> <Amount>",
     run: async (bot, message, args) => {
-  let guildid = message.guild.id;
-  let guild = await Guild.findOne({
-    Guild: guildid
-  });
+    let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: guildid
+    });
+    const user = await User.findOne({
+      Guild: guildid,
+      ID: message.author.id
+    });
 
-  let betside = args[0];
-  let amount = parseInt(args[1]);
+  if (!args[0]) {
+    return message.reply("You need to specify side you want to bet on,either heads or tails!");
+  }
 
-  const user = await User.findOne({
-    Guild: guildid,
-    ID: message.author.id
-  });
-
-  betside = betside.toLowerCase();
+  let betside = args[0].toLowerCase();
   if (betside == "h" || betside.includes("heads")) betside = 0;
   else if (betside == "t" || betside.includes("tails")) betside = 1;
   else return message.reply("You must chose between Heads and Tails.");
 
-  let cash = user.Cash;
-
-  if (!amount) {
+  if (!parseInt(args[1])) {
     return message.reply("You need to suply amount of money you want to bet on that side!");
   }
-  if (isNaN(amount)) {
+  if (isNaN(args[1])) {
     return message.reply("You need to supply amount you want to bet in numbers!");
   }
 
-  if (cash - amount < 0) {
+  if (user.Cash - args[1] < 0) {
     return message.channel.send(`${message.author}, Sorry, you are betting more than you have!`);
   }
 
-  if (amount < 0) {
+  if (args[1] < 0) {
     return message.reply("Amount cannot be less than 0$!");
   }
+
+  let amount = parseInt(args[1]);
+
+  let cash = user.Cash;
 
   let side = [
     "Heads",
