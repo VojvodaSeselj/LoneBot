@@ -10,6 +10,7 @@ module.exports = {
     category: "Member",
     description: "Report a member.",
     usage: "Report <User> <Reason>",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let guild = await Guild.findOne({

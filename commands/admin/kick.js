@@ -10,14 +10,15 @@ module.exports = {
     category: "Admin",
     description: "Kick a member from the server.",
     usage: "Kick <Member> <Reason>",
-    example: "Kick @Username#9287 Example",
+    example: "Kick @Username#9287 Spam",
+    cooldown: 5,
     run: async (bot, message, args) => {
       let guild = await Guild.findOne({
         Guild: message.guild.id
       });
       if(message.deletable) message.delete()
 
-      if (!message.member.roles.some(r=>guild.AdminRoles.includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+      if (!message.member.roles.some(r=>guild.AdminRole.includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) {
         return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
       }
       if (!message.guild.me.hasPermission("KICK_MEMBERS")) {
@@ -61,13 +62,13 @@ module.exports = {
                  .setDescription(`Are you sure you want to kick ${toKick}?`)
 
              // Send the message
-             await message.channel.send(promptEmbed).then(async msg => {
+             await message.channel.send(promptEmbed).then(async message => {
                  // Await the reactions and the reaction collector
-                 const emoji = await promptMessage(msg, message.author, 30, ["✅", "❌"]);
+                 const emoji = await promptMessage(message, message.author, 30, ["✅", "❌"]);
 
                  // The verification stuffs
                  if (emoji === "✅") {
-                     msg.delete();
+                     message.delete();
                      const kick = new Kick({
                          Guild: message.guild.id,
                          KickedUser: {
@@ -92,7 +93,7 @@ module.exports = {
 
                      logsChannel.send(embed);
                  } else if (emoji === "❌") {
-                     msg.delete();
+                     message.delete();
 
                      message.reply(`Kick canceled.`)
                          .then(m => m.delete(10000));

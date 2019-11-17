@@ -9,6 +9,8 @@ module.exports = {
     category: "Games",
     description: "Gamble on slots.",
     usage: "Slots <Amount>",
+    exampe: "Slots 1000",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let guild = await Guild.findOne({
@@ -23,12 +25,22 @@ module.exports = {
     let amount = parseInt(args[0]);
     let win = false;
 
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is: ${guild.Prefix}${module.exports.usage}`);
+    if (!args[0]) {
+      return message.reply("You need to provide amount of money you want to bet on slots!");
+    }
 
-    if (amount > 1000) return message.channel.send(`${message.author}, You cannot bet more than 1000$!`);
-    if (cash - amount < 0) return message.channel.send(`${message.author}, Sorry, you are betting more than you have!`);
-    if (amount < 0) return message.reply("Amount cannot be less than 0$!");
-    if (isNaN(amount)) return message.reply("Amount you want to bet must be in numbers!");
+    if (amount > 1000) {
+      return message.reply("You cannot bet more than 1000$!");
+    }
+    if (cash - amount < 0) {
+      return message.reply("Sorry, you are betting more than you have!");
+    }
+    if (amount < 0) {
+      return message.reply("Amount cannot be less than 0$!");
+    }
+    if (isNaN(amount)) {
+      return message.reply("Amount you want to bet must be in numbers!");
+    }
 
     let number = []
     for (i = 0; i < 3; i++) { number[i] = Math.floor(Math.random() * slotItems.length); }

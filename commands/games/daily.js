@@ -1,15 +1,15 @@
 const User = require("../../models/user.js");
 
 module.exports = {
-    name: "work",
+    name: "daily",
     aliases: [],
     category: "Games",
-    description: "Get some money by workings.",
-    usage: "Work",
-    example: "Work",
-    cooldown: 3600,
+    description: "Get daily money.",
+    usage: "Daily",
+    example: "Daily",
+    cooldown: 86400,
     run: async (bot, message, args) => {
-      let bankAdd = Math.floor(Math.random() * 600) + 300;
+      let bankAdd = Math.floor(Math.random() * 2000) + 700;
       let guild = message.guild.id;
       let user = await User.findOne({
         Guild: guild,

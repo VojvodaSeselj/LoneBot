@@ -1,28 +1,22 @@
 const { RichEmbed } = require("discord.js");
 const { stripIndents } = require("common-tags");
+const CD = require("../models/cd.js");
 const Guild = require("../models/guild.js");
+const Shop = require("../models/shop.js");
 const User = require("../models/user.js");
 const Warn = require("../models/warn.js");
+const ms = require("ms")
 const adWords = [`discord.gg`, `.gg/`, `.gg /`, `. gg /`, `. gg/`, `discord .gg /`, `discord.gg /`, `discord .gg/`, `discord .gg`, `discord . gg`, `discord. gg`, `discord gg`, `discordgg`, `discord gg /`]
-const active = new Map();
-let cooldown = new Set();
-let cdseconds = 3;
 
 module.exports = async (bot, message) => {
-    //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
-    if (message.channel.type === "dm") return;
-    if (message.author.bot) return;
-
-    let guildid = message.guild.id;
     let guild = await Guild.findOne({
-      Guild: guildid
+      Guild: message.guild.id
     });
     if (!guild) {
       guild = new Guild({
-        GuildName: message.guild.name,
-        Guild: guildid,
-        AdminRoles: [],
-        ModeratorRoles: [],
+        Guild: message.guild.id,
+        AdminRole: "",
+        ModeratorRole: "",
         Prefix: ".",
         Nsfw: false,
         Verify: {
@@ -46,10 +40,25 @@ module.exports = async (bot, message) => {
           Enabled: false,
           Roles: [],
         },
-        LogChannel: ""
+        LogsChannel: ""
       });
     }
-    guild.save()
+    guild.save().catch(err => console.log(err));
+
+    //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
+    if (message.channel.type === "dm") return;
+    if (message.author.bot) return;
+    if (!message.guild.me.hasPermission("SEND_MESSAGES")) return;
+    if (!message.member) message.member = message.guild.fetchMember(message.author);
+
+    let shop = await Shop.findOne({ Guild: message.guild.id });
+    if (!shop) {
+      shop = new Shop({
+        Guild: message.guild.id,
+        Items: [],
+      });
+    }
+    shop.save().catch(err => console.log(err));
     const chatMute = message.guild.roles.find(role => role.name === "Chat Muted") || message.guild.createRole({ name:"Chat Muted", color:"#27272b", permissions:[] });
     const voiceMute = message.guild.roles.find(role => role.name === "Voice Muted") || message.guild.createRole({ name:"Voice Muted", color:"#27272b", permissions:[] });
     //Filter za reklame
@@ -59,7 +68,7 @@ module.exports = async (bot, message) => {
       let warnembed = new RichEmbed()
           .setAuthor(message.author.tag, message.author.avatarURL)
           .setColor("#6b0808")
-          .addField("Warned By", "LoneBot")
+          .addField("Warned By", bot.user.username)
           .addField("Original message", message)
           .addField("Reason", "Advertisement");
 
@@ -77,7 +86,7 @@ module.exports = async (bot, message) => {
             ID: message.author.id,
           },
           WarnedBy: {
-            Username: "LoneBot",
+            Username: bot.user.username,
             ID: "586263579817279504",
           },
           Reason: "Advertisement",
@@ -85,19 +94,15 @@ module.exports = async (bot, message) => {
 
       });
 
-      warn.save()
-          .then(result => console.log(result))
-          .catch(err => console.log(err));
+      warn.save().catch(err => console.log(err));
 
-          let guild = message.guild.id;
           let warnings = await Warn.find({
-              Guild: guild,
+              Guild: message.guild.id,
               WarnedUser: {
                 Username: message.author.username,
                 ID: message.author.id,
               },
           })
-          console.log(warnings);
           message.channel.send(`<@${message.author.id}> you have been warned for **Advertisement**,be careful because ${3 - warnings.length} more warnings will get you banned!`)
 
       if (warnings.length === 3) {
@@ -120,30 +125,25 @@ module.exports = async (bot, message) => {
 
     //Proverava da li poruka pocinje sa prefixom i ako da ne dodeljuje mu XP.
   	if (!message.content.startsWith(guild.Prefix)) {
-  		let author = message.author.id;
-      let guild = message.guild.id;
       let user = await User.findOne({
-        Guild: guild,
-        ID: message.author.id
-      });
-      if (!user) {
-        user = new User({
-          Guild: guild,
-          Username: message.author.username,
-          ID: message.author.id,
-          XP: 0,
-          Level: 1,
-          Cash: 0,
-          Bank: 1000,
-          Joined: message.author.joinedAt
-        });
-      }
+    		Guild: message.guild.id,
+    		ID: message.author.id
+    	});
+    	let userObject = {
+    		Guild: message.guild.id,
+    		ID: message.author.id,
+    		XP: 0,
+    		Level: 1,
+    		Cash: 0,
+    		Bank: 1000,
+    		Joined: message.author.joinedAt
+    	}
+    	if(!user) user = new User(userObject);
 
       //Ukoliko je poruka poslata u newbie-verify ne dodeljuje XP.
       if (message.channel.name === guild.VerifyChannel) return;
       if (message.member.roles.has(chatMute.id) || message.member.roles.has(voiceMute.id)) return;
-      let addXp = 20
-      user.XP = user.XP + addXp;
+      user.XP = user.XP + 20;
       let untilNext = 5 * ((user.Level + 1) ** 2) + 50 * (user.Level + 1) + 100
       if (untilNext <= user.XP) {
         user.Level = user.Level + 1;
@@ -184,31 +184,37 @@ module.exports = async (bot, message) => {
           await(message.member.addRole(level50.id));
           message.channel.send(`<@${message.author.id}> since you leveled up to level 50 you get role **Lonely AF**!`);
       }
-  		user.save().catch(err => console.log(err));
+      user.save().catch(err => console.log(err));
     }
-    try {
-      let ops = {
-        active: active
-      }
-      if (!message.content.startsWith(guild.Prefix)) return;
-      if (cooldown.has(message.author.id)){
-        message.delete()
-        return message.reply("You need to wait 3 seconds between using commands!").then(m => m.delete(3000));
-      }
-      cooldown.add(message.author.id)
 
-      let prefix = guild.Prefix;
-      let args = message.content.slice(prefix.length).trim().split(/ +/g);
-      let cmd = args.shift().toLowerCase();
-      if (cmd.length === 0) return;
-      let command = bot.commands.get(cmd);
-      if (!command) command = bot.commands.get(bot.aliases.get(cmd));
-      if (command) command.run(bot, message, args);
+    let prefix = guild.Prefix;
+    let args = message.content.slice(prefix.length).trim().split(/ +/g);
+    let cmd = args.shift().toLowerCase();
+    if (cmd.length === 0) return;
+    let command = bot.commands.get(cmd);
+    if (!message.content.startsWith(guild.Prefix)) return;
 
-      setTimeout(() => {
-        cooldown.delete(message.author.id);
-      }, cdseconds * 1000)
-    } catch (e) {
-      console.log(e)
-    }
+    if (!command) command = await bot.commands.get(bot.aliases.get(cmd));
+      if (command) {
+        const cd = await CD.findOne({ Guild: message.guild.id, CommandName: command.name, UsedBy: message.author.id });
+        if (!cd || cd && Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now())) <= 0) {
+          if (cd) cd.deleteOne().catch(err => console.log(err));
+          command.run(bot, message, args)
+          const cooldown = new CD({
+            Guild: message.guild.id,
+            CommandName: command.name,
+            Used: Date.now(),
+            UsedBy: message.author.id,
+            Cooldown: command.cooldown,
+        })
+        cooldown.save().catch(err => console.log(err));
+
+        setTimeout(async () => {
+          if (cd) cooldown.deleteOne().catch(err => console.log(err));
+      }, command.cooldown * 1000);
+
+    } else if (cd && Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now())) >= 1) {
+        return message.reply(`You need to wait **${Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now()) / 1000)}** seconds before using this command again!`).then(message.delete(2000))
+     }
   }
+}

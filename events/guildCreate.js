@@ -1,16 +1,14 @@
 const Guild = require("../models/guild.js");
 
 module.exports = async (bot, guild) => {
-  let guildid = guild.id;
   let newguild = await Guild.findOne({
-    Guild: guildid
+    Guild: guild.id
   });
   if (!newguild) {
     newguild = new Guild({
-      GuildName: message.guild.name,
-      Guild: guildid,
-      AdminRoles: [],
-      ModeratorRoles: [],
+      Guild: guild.id,
+      AdminRole: "",
+      ModeratorRole: "",
       Prefix: ".",
       Nsfw: false,
       Verify: {
@@ -34,7 +32,7 @@ module.exports = async (bot, guild) => {
         Enabled: false,
         Roles: [],
       },
-      LogChannel: ""
+      LogsChannel: ""
     });
   }
   newguild.save().catch(err => console.log(err));

@@ -1,3 +1,4 @@
+const { getMember } = require("../../functions.js");
 const { RichEmbed } = require("discord.js");
 const { stripIndents } = require("common-tags");
 const User = require("../../models/user.js");
@@ -8,9 +9,10 @@ module.exports = {
     category: "Games",
     description: "Shows your or someone else's balance.",
     usage: "Balance [User]",
+    example: "Balance @Username#9287",
     cooldown: 5,
     run: async (bot, message, args) => {
-    const cuser = message.mentions.users.first() || message.author;
+    const cuser = await getMember(message, args[0]);
     let guild = message.guild.id;
     let user = await User.findOne({
       Guild: guild,
@@ -19,7 +21,6 @@ module.exports = {
     if (!user) {
       user = new User({
         Guild: guild,
-        Username: cuser.username,
         ID: cuser.id,
         XP: 0,
         Level: 1,

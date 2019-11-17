@@ -8,6 +8,8 @@ module.exports = {
     category: "Member",
     description: "Shows bot informations.",
     usage: "BotInfo",
+    example: "BotInfo",
+    cooldown: 5,
     run: async (bot, message, args) => {
     const Owner = bot.users.get("345970401660239882") || await bot.fetchUser("345970401660239882");
     let embed = new RichEmbed()

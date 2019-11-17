@@ -8,6 +8,8 @@ module.exports = {
     category: "Games",
     description: "Gamble on which side coin will land.",
     usage: "CoinFlip <Heads or Tails> <Amount>",
+    example: "CoinFlip Heads 6009",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let guild = await Guild.findOne({
@@ -19,13 +21,13 @@ module.exports = {
     });
 
   if (!args[0]) {
-    return message.reply("You need to specify side you want to bet on,either heads or tails!");
+    return message.reply("You need to specify side you want to bet on,either Heads or Tails!");
   }
 
   let betside = args[0].toLowerCase();
   if (betside == "h" || betside.includes("heads")) betside = 0;
   else if (betside == "t" || betside.includes("tails")) betside = 1;
-  else return message.reply("You must chose between Heads and Tails.");
+  else return message.reply("You can only bet on Heads or Tails.");
 
   if (!parseInt(args[1])) {
     return message.reply("You need to suply amount of money you want to bet on that side!");

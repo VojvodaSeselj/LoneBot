@@ -1,5 +1,6 @@
 const { RichEmbed } = require("discord.js");
 const { readdirSync } = require("fs");
+const { stripIndents } = require("common-tags")
 const Guild = require("../../models/guild.js");
 
 module.exports = {
@@ -8,6 +9,7 @@ module.exports = {
     category: "Member",
     description: "Shows help for commands.",
     usage: "Help [CommandName]",
+    cooldown: 5,
     run: async (bot, message, args) => {
         let guildid = message.guild.id;
         let guild = await Guild.findOne({
@@ -16,7 +18,7 @@ module.exports = {
         if (!args[0]) {
           let helpEmbed = new RichEmbed()
               .setColor("#00c3df")
-              .setDescription(`**Commands List**
+              .setDescription(stripIndents`**List Of Commands**
               **BotInfo**
               Shows information about bot.
 
@@ -25,9 +27,6 @@ module.exports = {
 
               **Avatar <user>**
               Shows avatar of user you want.
-
-              **Confess [confession]**
-              Sends your confession anonimously in confession-channel.
 
               **Doggo**
               Shows random image of dog.
@@ -40,9 +39,6 @@ module.exports = {
 
               **Report <user> <reason>**
               Report somebody with reason.
-
-              **MusicHelp**
-              Give you a list of all music commands.
 
               **GamesHelp**
               Give you a list of all games commands.

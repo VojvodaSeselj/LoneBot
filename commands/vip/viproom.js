@@ -6,6 +6,7 @@ module.exports = {
     category: "VIP",
     description: "Make VIP room.",
     usage: "VIPRoom <Room-Name> [Slots]",
+    cooldown: 5,
     run: async (bot, message, args) => {
 
   let rUser = message.author;

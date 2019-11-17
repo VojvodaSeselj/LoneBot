@@ -7,13 +7,14 @@ module.exports = {
     description: "Clear chat.",
     usage: "Clear <NumberOfLines>",
     example: "Clear 69",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guild = await Guild.findOne({
       Guild: message.guild.id
     });
     if (message.deletable) message.delete();
 
-    if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+    if (!message.member.roles.some(r=>guild.ModeratorRole.concat(guild.AdminRole).includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) {
       return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
     }
     if (!message.guild.me.hasPermission("MANAGE_MESSAGES")) {

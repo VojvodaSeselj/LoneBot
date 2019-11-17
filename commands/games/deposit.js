@@ -7,6 +7,8 @@ module.exports = {
     category: "Games",
     description: "Deposit money in bank.",
     usage: "Deposit <Amount>",
+    example: "Deposit 1000",
+    cooldown: 5,
     run: async (bot, message, args) => {
   let guildid = message.guild.id;
   let guild = await Guild.findOne({

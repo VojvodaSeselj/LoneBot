@@ -1,5 +1,5 @@
 const { RichEmbed } = require("discord.js");
-const { getMember } = require("../../functions.js");
+const { promptMessage, getMember } = require("../../functions.js");
 const { stripIndents } = require("common-tags");
 const Ban = require("../../models/ban.js");
 const Guild = require("../../models/guild.js");
@@ -10,14 +10,15 @@ module.exports = {
     category: "Admin",
     description: "Ban a member from the server.",
     usage: "Ban <Member> <Reason>",
-    example: "Ban @Username#9287 Example",
+    example: "Ban @Username#9287 Being bad person",
+    cooldown: 5,
     run: async (bot, message, args) => {
       let guild = await Guild.findOne({
         Guild: message.guild.id
       });
-      if (message.deletable) message.delete()
+      //if (message.deletable) message.delete()
 
-      if (!message.member.roles.some(r=>guild.AdminRoles.includes(r.id)) || !message.member.hasPermission("ADMINISTRATOR")) {
+      if (!message.member.roles.some(r=>guild.AdminRole.includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) {
         return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
       }
       if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
@@ -61,13 +62,13 @@ module.exports = {
                  .setDescription(`Are you sure you want to ban ${toBan}?`)
 
              // Send the message
-             await message.channel.send(promptEmbed).then(async msg => {
+             await message.channel.send(promptEmbed).then(async message => {
                  // Await the reactions and the reaction collector
-                 const emoji = await promptMessage(msg, message.author, 30, ["✅", "❌"]);
+                 const emoji = await promptMessage(message, message.author, 30, ["✅", "❌"]);
 
                  // The verification stuffs
                  if (emoji === "✅") {
-                     msg.delete();
+                     message.delete();
                      const ban = new Ban({
                          Guild: message.guild.id,
                          BannedUser: {
@@ -92,7 +93,7 @@ module.exports = {
 
                      logsChannel.send(embed);
                  } else if (emoji === "❌") {
-                     msg.delete();
+                     message.delete();
 
                      message.reply(`Ban canceled.`)
                          .then(m => m.delete(10000));

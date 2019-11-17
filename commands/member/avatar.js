@@ -7,6 +7,8 @@ module.exports = {
     category: "Member",
     description: "Shows your or someone else's avatar.",
     usage: "Avatar [User]",
+    example: "Avatar @Username#9287",
+    cooldown: 5,
     run: async (bot, message, args) => {
   const user = await getMember(message, args[0]) || message.author;
   const avatarEmbed = new RichEmbed()

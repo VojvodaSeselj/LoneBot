@@ -7,6 +7,7 @@ module.exports = {
     category: "Member",
     description: "Verify yourself.",
     usage: "Verify",
+    cooldown: 5,
     run: async (bot, message, args) => {
   let guildid = message.guild.id;
   let guild = await Guild.findOne({

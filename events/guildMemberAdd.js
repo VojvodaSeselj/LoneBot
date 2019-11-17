@@ -3,34 +3,66 @@ const User = require("../models/user.js");
 const Guild = require("../models/guild.js");
 
 module.exports = async (bot, member) => {
+	let user = await User.findOne({
+		Guild: member.guild.id,
+		ID: member.id
+	});
+	let userObject = {
+		Guild: member.guild.id,
+		ID: member.id,
+		XP: 0,
+		Level: 1,
+		Cash: 0,
+		Bank: 1000,
+		Joined: member.joinedAt
+	}
+	if(!user) user = new User(userObject);
+	user.save().catch(err => console.log(err));
+
   //Kada udje novi member dodeljuje mu role i salje welcome poruku.
 	const guild = await Guild.findOne({ Guild: member.guild.id });
+	if (!guild) {
+		guild = new Guild({
+			Guild: member.guild.id,
+			AdminRole: "",
+			ModeratorRole: "",
+			Prefix: ".",
+			Nsfw: false,
+			Verify: {
+				Enabled: false,
+				VerifyRole: "",
+				VerifiedRole: "",
+				Channel: "",
+				LogsChannel: "",
+			},
+			Welcome: {
+				Enabled: false,
+				Channel: "",
+				Message: "",
+			},
+			Leave: {
+				Enabled: false,
+				Channel: "",
+				Message: "",
+			},
+			AutoRoles: {
+				Enabled: false,
+				Roles: [],
+			},
+			LogsChannel: ""
+		});
+	}
+	guild.save().catch(console.error)
+
 	if(guild.AutoRoles.Roles.length !== 0) {
 		for(const role of guild.AutoRoles.Roles) {
 			member.addRole(role).catch(err => console.log(err));
 		}
 	}
-  let user = await User.findOne({
-    Guild: member.guild.id,
-    ID: member.user.id
-  });
-  if (!user) {
-    user = new User({
-      Guild: member.guild.id,
-      Username: member.user.username,
-      ID: member.user.id,
-      XP: 0,
-      Level: 1,
-      Cash: 0,
-      Bank: 1000,
-      Joined: member.joinedAt
-    });
-  }
-  user.save().catch(err => console.log(err));
 
-	if(guild.Welcome.Enabled === false) return;
-	if(guild.Welcome.Message === "" || guild.Welcome.Message.length < 1) return;
-	if(guild.Welcome.Channel === "") return;
+	if(!guild.Welcome.Enabled && guild.Welcome.Enabled === false) return;
+	if(!guild.Welcome.Message && guild.Welcome.Message.length < 1) return;
+	if(!guild.Welcome.Channel && guild.Welcome.Channel < 1) return;
 	const placeHolders = {
 		"memberCount": member.guild.memberCount,
 		"botCount": member.guild.members.filter(x => x.user.bot).size,

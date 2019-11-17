@@ -8,6 +8,7 @@ module.exports = {
     category: "Games",
     description: "Shows top 10 richest people on this server.",
     usage: "LeaderBoard",
+    example: "LeaderBoard",
     cooldown: 5,
     run: async (bot, message, args) => {
       await message.delete()
@@ -31,9 +32,9 @@ module.exports = {
             for (i = 0; i < res.length; i++) {
               let member = message.guild.members.get(res[i].ID) || "User Left"
               if (member === "User Left") {
-                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash + res[i].Bank}`);
+                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash}`);
               } else {
-                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash + res[i].Bank}`);
+                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash}`);
               }
             }
           }else{
@@ -41,9 +42,9 @@ module.exports = {
             for (i = 0; i < 10; i++) {
               let member = message.guild.members.get(res[i].ID) || "User Left"
               if (member === "User Left") {
-                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash + res[i].Bank}`);
+                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash}`);
               } else {
-                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash + res[i].Bank}`);
+                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash}`);
               }
             }
           }

@@ -9,6 +9,7 @@ module.exports = {
     category: "Member",
     description: "Shows server informations.",
     usage: "ServerInfo",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let region = {
       "brazil": ":flag_br: Brazil",

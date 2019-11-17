@@ -9,19 +9,54 @@ module.exports = async (bot, member) => {
     ID: member.user.id
   });
   if (user) {
-  user.delete().catch(err => console.log(err));
+    User.deleteOne({ Guild: member.guild.id, ID: member.user.id }, (err) => {
+  		if(err) console.log(err);
+  	});
   }
   let guild = await Guild.findOne({ Guild: member.guild.id });
-	if(guild.Leave.Enabled === false) return;
-	if(guild.Leave.Message === "" || guild.Leave.Message.length < 1) return;
-	if(guild.Leave.Channel === "") return;
+  if (!guild) {
+    guild = new Guild({
+      Guild: member.guild.id,
+      AdminRole: "",
+      ModeratorRole: "",
+      Prefix: ".",
+      Nsfw: false,
+      Verify: {
+        Enabled: false,
+        VerifyRole: "",
+        VerifiedRole: "",
+        Channel: "",
+        LogsChannel: "",
+      },
+      Welcome: {
+        Enabled: false,
+        Channel: "",
+        Message: "",
+      },
+      Leave: {
+        Enabled: false,
+        Channel: "",
+        Message: "",
+      },
+      AutoRoles: {
+        Enabled: false,
+        Roles: [],
+      },
+      LogsChannel: ""
+    });
+  }
+  guild.save().catch(err => console.log(err));
+
+	if(!guild.Leave.Enabled && guild.Leave.Enabled === false) return;
+	if(!guild.Leave.Message && guild.Leave.Message.length < 1) return;
+	if(!guild.Leave.Channel && guild.Leave.Channel.length < 1) return;
 	const placeHolders = {
 		"memberCount": member.guild.memberCount,
-		"serverName": member.guild.name,
+    "serverName": member.guild.name,
 		"userTag": member.user.tag,
 	};
 	const leaveMessage = guild.Leave.Message.replace(/{(memberCount|serverName|userTag)}/gi, m => placeHolders[m.slice(1, -1)]);
-  const leaveChannel = member.guild.channels.find(channel => channel.name === guild.Welcome.Channel);
+  const leaveChannel = member.guild.channels.find(channel => channel.name === guild.Leave.Channel);
 	if(!leaveChannel) return;
-	leaveChannel.send(leaveWelcome).catch(err => console.log(err));
+	leaveChannel.send(leaveMessage).catch(err => console.log(err));
 }

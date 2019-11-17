@@ -17,7 +17,7 @@ module.exports = async (bot, oldMessage, newMessage) => {
     let warnembed = new RichEmbed()
         .setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
         .setColor("#6b0808")
-        .addField("Warned By", oldMessage.me.tag)
+        .addField("Warned By", bot.user.tag)
         .addField("Reason", "Advertisement");
 
     let logschannel = oldMessage.guild.channels.find(channel => channel.name === "moderation-logs");
@@ -31,23 +31,20 @@ module.exports = async (bot, oldMessage, newMessage) => {
         Guild: newMessage.guild.id,
         WarnedUsername: newMessage.author.username,
         WarnedUserID: newMessage.author.id,
-        WarnedBy: "LoneBot",
+        WarnedBy: bot.user.tag,
         WarnedByID: "586263579817279504",
         Reason: "Advertisement",
         Time: newMessage.createdAt
 
     });
 
-    warn.save()
-        .then(result => console.log(result))
-        .catch(err => console.log(err));
+    warn.save().catch(err => console.log(err));
 
         let guild = oldMessage.guild.id;
         let warnings = await Warn.find({
             Guild: guild,
             WarnedUserID: wUser.id
         })
-        console.log(warnings);
         oldMessage.channel.send(`<@${wUser.id}> you have been warned for **Advertisement**,be careful because ${3 - warnings.length} more warnings will get you banned!`)
 
     if (warnings.length === 3) {

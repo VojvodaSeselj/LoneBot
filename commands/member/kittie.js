@@ -7,6 +7,7 @@ module.exports = {
     category: "Member",
     description: "Shows random cat picture.",
     usage: "Kittie",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let {
         body

@@ -7,6 +7,7 @@ module.exports = {
     description: "Use this command to run a code!",
     usage: "Run <Code>",
     example: "Run console.log(\"Hello World\")",
+    cooldown: 5,
     run: async (bot, message, args) => {
 		if(args[0] === "command") {
 			const cmd = this.bot.commands.get(args[1]);

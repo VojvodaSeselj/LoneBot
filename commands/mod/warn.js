@@ -12,11 +12,12 @@ module.exports = {
     description: "Warn a member.",
     usage: "Warn <User> <Reason>",
     example: "Warn @Username#9287 Example",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guild = await Guild.findOne({
       Guild: message.guild.id
     });
-    if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+    if (!message.member.roles.some(r=>guild.ModeratorRole.concat(guild.AdminRole).includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) {
       return message.reply("You do not have required permission to warn members!").then(m => m.delete(5000));
     }
     if (!args[0]) {
@@ -30,6 +31,9 @@ module.exports = {
     if (!toWarn) {
       return message.reply("Couldn't find that member!").then(m => m.delete(5000));
     }
+    if (toWarn.roles.some(r=>guild.ModeratorRole.concat(guild.AdminRole).includes(r.name)) && toWarn.hasPermission("ADMINISTRATOR")) {
+      return message.reply("You can't warn that member!");
+    }
     if (toWarn === message.author.id) {
       return message.reply("You can't warn yourself!").then(m => m.delete(5000));
     }
@@ -40,7 +44,7 @@ module.exports = {
 
     const embed = new RichEmbed()
                .setColor("#cf0808")
-               .setThumbnail(toBan.user.displayAvatarURL)
+               .setThumbnail(toWarn.user.displayAvatarURL)
                .setFooter(message.author.tag, message.author.displayAvatarURL)
                .setDescription(stripIndents`**Warn**
                **Warned User**  ${toWarn.user} **with ID** ${toWarn.user.id}
@@ -48,8 +52,8 @@ module.exports = {
                **Time** ${message.createdAt}
                **Reason** ${reason}`);
 
-    logschannel.send(embed);
-    msg.delete();
+    logsChannel.send(embed);
+    message.delete();
 
     const warn = new Warn({
         Guild: message.guild.id,
@@ -70,17 +74,16 @@ module.exports = {
         .then(result => console.log(result))
         .catch(err => console.log(err));
 
-        let warnings = await Warn.find({
-            Guild: message.guild.id,
-            WarnedUser: {
-              Username: toWarn.user.username,
-              ID: toWarn.user.id,
-            },
-        })
-        console.log(warnings);
-        message.channel.send(`<@${toWarn.id}> you have been warned for **${reason}**,be careful because ${3 - warnings.length} more warnings will get you banned!`)
+    let warnings = await Warn.find({
+        Guild: message.guild.id,
+        WarnedUser: { ID: toWarn.user.id },
+    })
+    console.log(warnings);
 
-    if (warnings.length === 3) {
+    if (warnings.length <= 2) {
+      message.channel.send(`<@${toWarn.id}> you have been warned for **${reason}**,be careful because ${3 - warnings.length} more warnings will get you banned!`);
+    }
+    if (warnings.length >= 3) {
         if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
           return message.reply("I do not have permission to ban members for being warned 3 times.").then(m => m.delete(5000));
         } else if (message.guild.me.hasPermission("BAN_MEMBERS")) {

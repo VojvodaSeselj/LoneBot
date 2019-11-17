@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
     Guild: String,
-    Username: String,
     ID: String,
     XP: Number,
     Level: Number,

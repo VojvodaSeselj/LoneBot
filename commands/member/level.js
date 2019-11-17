@@ -8,6 +8,7 @@ module.exports = {
     category: "Member",
     description: "Shows your level and XP progress.",
     usage: "Level",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let user = await User.findOne({
@@ -17,7 +18,6 @@ module.exports = {
     if (!user) {
       user = new User({
         Guild: guildid,
-        Username: message.author.username,
         ID: message.author.id,
         XP: 0,
         Level: 1,

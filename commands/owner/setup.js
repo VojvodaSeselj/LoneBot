@@ -1,18 +1,24 @@
 const { RichEmbed } = require("discord.js");
-const { ErrorMsg, findRole } = require("../../functions.js");
 const { stripIndents } = require("common-tags");
 const Guild = require("../../models/guild.js")
 
 module.exports = {
     name: "setup",
     aliases: [],
-    category: "Moderation",
+    category: "Owner",
     description: "Set up bot for your discord server.",
     usage: "SetUp",
     example: "SetUp logschannel moderation-logs",
+    cooldown: 5,
     run: async (bot, message, args) => {
       let guildid = message.guild.id;
       let guild = await Guild.findOne({ Guild: guildid })
+      if (message.deletable) message.delete()
+
+      if (!message.member.hasPermission("ADMINISTRATOR")) {
+        return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
+      }
+
       const setupEmbed = new RichEmbed()
           .setColor("#ff8c00")
           .setThumbnail(message.member.tag, message.member.displayAvatarURL)
@@ -50,16 +56,17 @@ module.exports = {
           To setup leave message which will be sent in leave channel.
           You can use these placeholders:
           {memberCount} - Number of members on your server.
+          {serverName} - Server name.
           {userTag} - Member's tag.
 
           **AutoRoles**
           To setup roles new members get upon joining or after verifying.
           To enable/disable it just write ${guild.Prefix}setup autoroles enable/disable!
 
-          **AdminRoles**
+          **AdminRole**
           To setup admin roles,they will be able to use all commands from moderation and admin category!
 
-          **ModeratorRoles**
+          **ModeratorRole**
           To setup moderator roles,they will be able to use all commands from moderation category!
 
           **Verify**
@@ -81,7 +88,7 @@ module.exports = {
           To enable/disable nsfw commands.`);
 
   		const toSetup = args[0];
-      if(!["logschannel", "prefix", "welcome", "welcomechannel", "welcomemessage", "leave", "leavechannel", "leavemessage", "autoroles", "adminroles", "moderatorroles", "verify", "verifychannel", "verifylogschannel", "verifyrole", "verifiedrole", "nsfw"].includes(args[0])) return message.channel.send(setupEmbed);
+      if(!["logschannel", "prefix", "welcome", "welcomechannel", "welcomemessage", "leave", "leavechannel", "leavemessage", "autoroles", "adminrole", "moderatorrole", "verify", "verifychannel", "verifylogschannel", "verifyrole", "verifiedrole", "nsfw"].includes(args[0])) return message.channel.send(setupEmbed);
 
   		if(toSetup === "logschannel") {
         if (!args[1]) return message.reply("You need to provide channel name!Caps sensitive!");
@@ -183,41 +190,23 @@ module.exports = {
             message.reply("Successfully added the role " + role.name + "!");
          }
         }
-         else if(toSetup === "adminroles") {
-          if (!args[1]) return message.reply("Do you want to Remove or Add one?");
-          if (!args[2]) return message.reply("You need to mention the role or provide the role id/name");
-          const role = message.guild.roles.find(role => role.name === args.slice(2).join(" "));
-          if (!role) return message.reply("Couldn't find that role!");
-          if (args[1].toLowerCase() === "remove") {
-            if (!guild.AdminRoles.includes(role.id)) return message.reply("That role isn't set up as an Admin Role!");
-            guild.AdminRoles.splice(guild.AdminRoles.findIndex((x) => x === role.id), 1);
-            guild.save().catch(console.error);
-            message.reply("Successfully removed the role " + role.name + "!");
-         }
-          if(args[1].toLowerCase() === "add") {
-            if(guild.AdminRoles.includes(role.id)) return message.reply("That role is already added as a Admin Role!");
-            guild.AdminRoles = [...guild.AdminRoles, role.id];
-            guild.save().catch(console.error);
-            message.reply("Successfully added the role " + role.name + "!");
-         }
-        }
-        else if(toSetup === "moderatorroles") {
-         if (!args[1]) return message.reply("Do you want to Remove or Add one?");
-         if (!args[2]) return message.reply("You need to mention the role or provide the role id/name");
-         const role = message.guild.roles.find(role => role.name === args.slice(2).join(" "));
-         if (!role) return message.reply("Couldn't find that role!");
-         if (args[1].toLowerCase() === "remove") {
-           if (!guild.ModeratorRoles.includes(role.id)) return message.reply("That role isn't set up as an Moderator Role!");
-           guild.ModeratorRoles.splice(guild.ModeratorRoles.findIndex((x) => x === role.id), 1);
-           guild.save().catch(console.error);
-           message.reply("Successfully removed the role " + role.name + "!");
-        }
-         if(args[1].toLowerCase() === "add") {
-           if(guild.ModeratorRoles.includes(role.id)) return message.reply("That role is already added as a Moderator Role!");
-           guild.ModeratorRoles = [...guild.ModeratorRoles, role.id];
-           guild.save().catch(console.error);
-           message.reply("Successfully added the role " + role.name + "!");
-        }
+        else if(toSetup === "adminrole") {
+         if (!args[1]) return message.reply("You need to supply name of the role you want to make admin role!");
+         let adminrole = message.guild.roles.find(role => role.name === args.slice(1).join(" "));
+         if (!adminrole) return message.reply("That role does not exist or you misspelled the name!")
+         if (adminrole.name === guild.AdminRole) return message.channel.send(`<@${message.author.id}>, You already set this role as admin role!`);
+         guild.AdminRole = adminrole.name;
+         message.channel.send(`<@${message.author.id}>, You set admin role to ${adminrole}.`);
+         guild.save().catch(console.error);
+       }
+        else if(toSetup === "moderatorrole") {
+         if (!args[1]) return message.reply("You need to supply name of the role you want to make moderator role!");
+         let modrole = message.guild.roles.find(role => role.name === args.slice(1).join(" "));
+         if (!modrole) return message.reply("That role does not exist or you misspelled the name!")
+         if (modrole.name === guild.ModeratorRole) return message.channel.send(`<@${message.author.id}>, You already set this role as moderator role!`);
+         guild.ModeratorRole = modrole.name;
+         message.channel.send(`<@${message.author.id}>, You set moderator role to ${modrole}.`);
+         guild.save().catch(console.error);
        }
       else if(toSetup === "verify") {
           if (!args[1]) return message.reply("You need to include enable(To enable it) or disable(To disable it)!");

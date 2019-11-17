@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const guildSchema = mongoose.Schema({
     GuildName: String,
     Guild: String,
-    AdminRoles: Array,
-    ModeratorRoles: Array,
+    AdminRole: String,
+    ModeratorRole: String,
     Prefix: String,
     Nsfw: Boolean,
     Verify: {

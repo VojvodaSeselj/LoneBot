@@ -8,6 +8,7 @@ module.exports = {
     category: "NSFW",
     description: "Shows random pussy picture/gif.",
     usage: "Pussy",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let defaultprefix = "."

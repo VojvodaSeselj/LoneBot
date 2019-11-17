@@ -1,5 +1,6 @@
 const Guild = require("../models/guild.js");
 const Mute = require("../models/mute.js");
+const CD = require("../models/cd.js")
 
 module.exports = (bot) => {
   console.log(`Bot - ${bot.user.username} is online!`);
@@ -9,7 +10,7 @@ module.exports = (bot) => {
       const mutes = await Mute.find({});
       for(const mute of mutes) {
           if(mute.Created + mute.Time <= Date.now()) {
-              const guild = bot.guilds.get(mute.Guild);
+              let guild = bot.guilds.get(mute.Guild);
               if(!guild) return;
               const member = guild.members.get(mute.MutedUser.ID);
               if(!member) continue;
@@ -17,12 +18,12 @@ module.exports = (bot) => {
                 let voiceRole = guild.roles.find((x) => x.name === "Voice Muted");
                 if(!voiceRole) voiceRole = guild.createRole({ name:"Voice Muted", color:"#27272b", permissions:[] });
                 if(!member.roles.has(voiceRole.id)) return;
-                member.removeRole(voiceRole)
+                member.removeRole(voiceRole.id)
               } else if(mute.Type === "Chat") {
                 let chatRole = guild.roles.find((x) => x.name === "Chat Muted");
                 if(!chatRole) chatRole = guild.createRole({ name:"Chat Muted", color:"#27272b", permissions:[] });
                 if(!member.roles.has(chatRole.id)) return;
-                member.removeRole(chatRole);
+                member.removeRole(chatRole.id);
               }
               Mute.deleteOne({ Guild: mute.Guild, MutedUser: { Username: member.user.username, ID: member.user.id }}, err => {
                   if(err) console.log(err);

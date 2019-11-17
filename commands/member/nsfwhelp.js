@@ -7,6 +7,7 @@ module.exports = {
     category: "Member",
     description: "Shows help for NSFW commands.",
     usage: "NSFWHelp",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let defaultprefix = "."

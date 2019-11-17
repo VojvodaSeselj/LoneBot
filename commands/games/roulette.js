@@ -13,33 +13,47 @@ module.exports = {
     category: "Games",
     description: "Gamble on roulette.",
     usage: "Roulette <Black,Red,Green> <Amount>",
+    example: "Roulette Red 1000",
+    cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let guild = await Guild.findOne({
       Guild: guildid
     });
-    let color = args[0];
-    let amount = parseInt(args[1]);
-
     let user = await User.findOne({
       Guild: guildid,
       ID: message.author.id
     });
     let cash = user.Cash
+    let color = args[0];
+    let amount = parseInt(args[1]);
 
-    if (!args[0]) return message.channel.send(`${message.author}, Usage for this command is:${guild.Prefix}${module.exports.usage}\nPick any of the color you want,but some are more likely than others.\n**Black** is for Even numbers and **Red** is for odd,both of these will provide you with **1.5x** your original amount.\nTake a risk and pick **Green** and you can get **14x** the amount of cash.`);
-    if (amount > 10000) return message.channel.send(`${message.author}, You cannot bet more than 1000$!`);
-    if (cash - amount < 0) return message.channel.send(`${message.author}, Sorry, you are betting more than you have!`);
-    if (amount < 0) return message.reply("Amount cannot be less than 0$!");
-    if (isNaN(amount)) return message.reply("Amount you want to bet must be in numbers!");
-
-    if (!color) return message.channel.send(`${message.author}, You must only bet on Black (1.5x), Red (1.5x), or Green (14x).`);
+    if (!args[0]) {
+      return message.reply("You need to provide color you want to bet on! **Black** , **Red** or **Green**.");
+    }
+    if (!args[1]) {
+      return message.reply("You need to provide amount of money you want to bet on that color!");
+    }
+    if (amount > 10000) {
+      return message.reply("You cannot bet more than 1000$!");
+    }
+    if (cash - amount < 0) {
+      return message.reply("Sorry, you are betting more than you have!");
+    }
+    if (amount < 0) {
+      return message.reply("Amount cannot be less than 0$!");
+    }
+    if (isNaN(amount)) {
+      return message.reply("Amount you want to bet must be in numbers!");
+    }
     color = color.toLowerCase()
 
     if (color == "b" || color.includes("black")) color = 0;
     else if (color == "r" || color.includes("red")) color = 1;
     else if (color == "g" || color.includes("green")) color = 2;
-    else return message.channel.send(`${message.author}, You must only bet on Black (1.5x), Red (1.5x), or Green (14x).`);
+    else {
+      return message.reply("You can only bet on Black (1.5x), Red (1.5x), or Green (14x)!");
+    }
 
     let random = Math.floor(Math.random() * 37);
 

@@ -11,10 +11,14 @@ module.exports = {
     category: "Moderation",
     description: "Shows user's informations.",
     usage: "UserInfo <User>",
+    cooldown: 5,
     run: async (bot, message, args) => {
+        let guild = await Guild.findOne({
+          Guild: message.guild.id
+        });
         if (message.deletable) message.delete()
 
-        if (!message.member.roles.some(r=>guild.ModeratorRoles.concat(guild.AdminRoles).includes(r.id)) || message.member.hasPermission("ADMINISTRATOR")) {
+        if (!message.member.roles.some(r=>guild.ModeratorRole.concat(guild.AdminRole).includes(r.name)) && !message.member.hasPermission("ADMINISTRATOR")) {
           return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
         }
         if (!args[0]) {
@@ -26,29 +30,15 @@ module.exports = {
         }
         let warnings = await Warn.find({
           Guild: message.guild.id,
-          WarnedUser: {
-            Username: userInfo.user.username,
-            ID: userInfo.user.id,
-          },
+          WarnedUser: { ID: userInfo.user.id },
         })
+
         let roles = userInfo.roles.map(role => role.toString());
         let user = await User.findOne({
           Guild: message.guild.id,
           ID: userInfo.user.id
         });
-        if (!user) {
-          user = new User({
-            Guild: message.guild.id,
-            Username: userInfo.user.username,
-            ID: userInfo.user.id,
-            XP: 0,
-            Level: 1,
-            Coins: 1000,
-            Joined: userInfo.joinedAt
-          });
-        }
-        user.save().catch(err => console.log(err));
-        let userinfoembed = new RichEmbed()
+        let embed = new RichEmbed()
             .setColor("#00c3df")
             .setThumbnail(userInfo.user.displayAvatarURL)
             .setFooter(message.author.username, message.author.displayAvatarURL)
@@ -62,6 +52,6 @@ module.exports = {
             **XP** ${user.XP}
             **Roles**
             ${roles.join(" **|** ")}`)
-        return message.channel.send(userinfoembed);
+        return message.channel.send(embed);
   }
 }
