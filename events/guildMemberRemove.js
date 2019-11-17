@@ -19,7 +19,7 @@ module.exports = async (bot, member) => {
       Guild: member.guild.id,
       AdminRole: "",
       ModeratorRole: "",
-      Prefix: ".",
+      Prefix: "sk!",
       Nsfw: false,
       Verify: {
         Enabled: false,
