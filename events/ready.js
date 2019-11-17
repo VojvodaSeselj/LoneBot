@@ -4,7 +4,7 @@ const CD = require("../models/cd.js")
 
 module.exports = (bot) => {
   console.log(`Bot - ${bot.user.username} is online!`);
-  bot.user.setActivity(`Type .help for help!`);
+  bot.user.setActivity(`Type sk!help for help!`);
 
   setInterval(async () => {
       const mutes = await Mute.find({});
