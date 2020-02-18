@@ -85,10 +85,13 @@ module.exports = {
           To setup role members get after verifying.
 
           **NSFW**
-          To enable/disable nsfw commands.`);
+          To enable/disable nsfw commands.
+
+          **XP**
+          To enable/disable xp and levels.`);
 
   		const toSetup = args[0];
-      if(!["logschannel", "prefix", "welcome", "welcomechannel", "welcomemessage", "leave", "leavechannel", "leavemessage", "autoroles", "adminrole", "moderatorrole", "verify", "verifychannel", "verifylogschannel", "verifyrole", "verifiedrole", "nsfw"].includes(args[0])) return message.channel.send(setupEmbed);
+      if(!["logschannel", "prefix", "welcome", "welcomechannel", "welcomemessage", "leave", "leavechannel", "leavemessage", "autoroles", "adminrole", "moderatorrole", "verify", "verifychannel", "verifylogschannel", "verifyrole", "verifiedrole", "nsfw", "xp"].includes(args[0])) return message.channel.send(setupEmbed);
 
   		if(toSetup === "logschannel") {
         if (!args[1]) return message.reply("You need to provide channel name!Caps sensitive!");
@@ -279,6 +282,23 @@ module.exports = {
         message.reply(`You ${args[1]}d NSFW commands!`);
         guild.Nsfw = option
         guild.save();
+    }
+    else if(toSetup === "xp") {
+      if (!args[1]) return message.reply("You need to include enable(To enable it) or disable(To disable it)!");
+      if (args[1] !== "enable" && args[1] !== "disable") return message.reply("You can only use enable and disable!Caps sensitive!");
+      let option = args[1];
+      option = option
+      .replace(/enable/g, true)
+      .replace(/disable/g, false);
+      if (args[1] === "enable" && guild.Xp === true) {
+        return message.reply(`You already ${args[1]}d XP system!`);
+      }
+      else if (args[1] === "disable" && guild.Xp === false) {
+        return message.reply(`You already ${args[1]}d XP system!`);
+      }
+      message.reply(`You ${args[1]}d XP system!`);
+      guild.Xp = option
+      guild.save();
     }
 	}
 }

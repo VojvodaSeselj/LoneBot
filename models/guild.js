@@ -7,6 +7,7 @@ const guildSchema = mongoose.Schema({
     ModeratorRole: String,
     Prefix: String,
     Nsfw: Boolean,
+    Xp: Boolean,
     Verify: {
       Enabled: Boolean,
       VerifyRole: String,

@@ -11,6 +11,7 @@ module.exports = async (bot, guild) => {
       ModeratorRole: "",
       Prefix: "sk!",
       Nsfw: false,
+      Xp: true,
       Verify: {
         Enabled: false,
         VerifyRole: "",
