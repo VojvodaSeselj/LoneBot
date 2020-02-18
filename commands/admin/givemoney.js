@@ -5,7 +5,7 @@ const Guild = require("../../models/guild.js");
 module.exports = {
     name: "givemoney",
     aliases: [],
-    category: "Moderation",
+    category: "Admin",
     description: "Give member money in bank or cash.",
     usage: "GiveMoney <User> <Amount> <Cash/Bank>",
     example: "GiveMoney @Username#9287 6000 Bank",

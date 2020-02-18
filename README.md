@@ -34,3 +34,5 @@ Welcome to `LoneBot`. This is a bot written in Discord.JS utilizing MongoDB usin
     * [x] Setup command (*Let server owner customize some parts of the bot for their server such as auto roles,admin roles,mod roles etc...*)
     * [x] Add & Remove role
     * [x] And more commands
+* [ ] To Do
+    * [ ] Make help menu be http://prntscr.com/q5qgoy

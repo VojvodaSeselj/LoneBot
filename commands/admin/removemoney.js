@@ -5,7 +5,7 @@ const Guild = require("../../models/guild.js");
 module.exports = {
     name: "removemoney",
     aliases: [],
-    category: "Moderation",
+    category: "Admin",
     description: "Remove member's money from bank or cash.",
     usage: "RemoveMoney <User> <Amount> <Cash/Bank>",
     example: "RemoveMoney @Username#9287 6000 Cash",

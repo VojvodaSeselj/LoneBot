@@ -12,7 +12,7 @@ module.exports = {
     description: "Steal money from other member.",
     usage: "Steal <User>",
     example: "Steal @Username#9287",
-    cooldown: 5,
+    cooldown: 7200,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
     let guild = await Guild.findOne({
@@ -52,11 +52,11 @@ module.exports = {
     stealFrom.Cash = stealFrom.Cash -= stealCash;
     moneyTo.save();
     stealFrom.save();
-    message.reply("You stole **${stealCash}**$ from <@${member.id}>.");
+    message.reply(`You stole **${stealCash}**$ from <@${member.id}>.`);
   } else if (chance <= 100){
     moneyTo.Cash = moneyTo.Cash - lostCoins;
     moneyTo.save();
-    message.reply("You were busted stealing and fined **${lostCoins}**$");
+    message.reply(`You were busted stealing and fined **${lostCoins}**$`);
     }
     stoleRecently.add(message.author.id);
     setTimeout(() => {
