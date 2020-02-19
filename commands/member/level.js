@@ -11,17 +11,16 @@ module.exports = {
     usage: "Level",
     cooldown: 5,
     run: async (bot, message, args) => {
-    let guildid = message.guild.id;
     let guild = await Guild.findOne({
       Guild: message.guild.id
     });
     let user = await User.findOne({
-      Guild: guildid,
+      Guild: message.guild.id,
       ID: message.author.id
     });
     if (!user) {
       user = new User({
-        Guild: guildid,
+        Guild: message.guild.id,
         ID: message.author.id,
         XP: 0,
         Level: 1,
