@@ -80,7 +80,8 @@ module.exports = async (bot, member) => {
   if (guild.Verify.Enabled === true && guild.Verify.VerifyRole !== "" && guild.Verify.VerifiedRole !== "" && guild.Verify.Channel !== "" && guild.Veify.LogsChannel !== "") {
   let ruser = member;
   let verifyrole = member.guild.roles.find(role => role.name === guild.Verify.VerifyRole);
-  if (!ruser.roles.has(verifyrole.id)) {
+	let verifiedrole = member.guild.roles.find(role => role.name === guild.Verify.VerifiedRole);
+  if (!ruser.roles.has(verifyrole.id) && !ruser.roles.has(verifiedrole.id)) {
       await(ruser.addRole(verifyrole.id));
     }
   }
