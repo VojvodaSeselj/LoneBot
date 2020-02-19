@@ -23,7 +23,7 @@ module.exports = {
     if (!args[0]) return;
     let opcija = args[0].toLowerCase();
 		if (opcija.includes("on")) {
-			const parent = await message.guild.createCategory(`:bar_chart:Server Stats:bar_chart:`)
+			const parent = await message.guild.createChannel(`:bar_chart:Server Stats:bar_chart:`, "category")
       const botc = await message.guild.createChannel(`Bot Count: ${message.guild.members.filter(member => member.user.bot).size}`)
       botc = await botc.setParent(parent)
       const userc = await message.guild.createChannel(`User Count: ${message.guild.members.filter(member => !member.user.bot).size}`)
