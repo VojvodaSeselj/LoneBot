@@ -77,7 +77,7 @@ module.exports = async (bot, member) => {
 	if(!welcomeChannel) return;
 	welcomeChannel.send(welcomeMessage).catch(err => console.log(err));
 
-  if (guild.Verify.Enabled === true && guild.Verify.VerifyRole !== "" && guild.Verify.VerifiedRole !== "" && guild.Verify.Channel !== "" && guild.Veify.LogsChannel !== "") {
+  if (guild.Verify.Enabled === true && guild.Verify.VerifyRole && guild.Verify.VerifiedRole && guild.Verify.Channel && guild.Veify.LogsChannel) {
   let ruser = member;
   let verifyrole = member.guild.roles.find(role => role.name === guild.Verify.VerifyRole);
 	let verifiedrole = member.guild.roles.find(role => role.name === guild.Verify.VerifiedRole);
