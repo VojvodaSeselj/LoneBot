@@ -125,7 +125,7 @@ module.exports = async (bot, message) => {
     let level50 = message.guild.roles.find(role => role.name === "Lonely AF [50]");
 
     //Proverava da li poruka pocinje sa prefixom i ako da ne dodeljuje mu XP.
-  	if (!message.content.startsWith(guild.Prefix)) {
+  	if (!message.content.startsWith(guild.Prefix) && guild.Xp === true) {
       let user = await User.findOne({
     		Guild: message.guild.id,
     		ID: message.author.id

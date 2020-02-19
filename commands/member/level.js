@@ -1,6 +1,7 @@
 const { RichEmbed } = require("discord.js");
 const { stripIndents } = require("common-tags");
 const User = require("../../models/user.js");
+const Guild = require("../../models/guild.js")
 
 module.exports = {
     name: "level",
@@ -11,6 +12,9 @@ module.exports = {
     cooldown: 5,
     run: async (bot, message, args) => {
     let guildid = message.guild.id;
+    let guild = await Guild.findOne({
+      Guild: message.guild.id
+    });
     let user = await User.findOne({
       Guild: guildid,
       ID: message.author.id
@@ -26,6 +30,7 @@ module.exports = {
         Joined: message.author.joinedAt
       });
     }
+    if (guild.Xp === true) {
     let currentXp = user.XP;
     let currentLevel = user.Level;
     let untilNext = 5 * ((user.Level + 1) ** 2) + 50 * (user.Level + 1) + 100
@@ -41,5 +46,6 @@ module.exports = {
     message.channel.send(lvlEmbed);
 
     user.save().catch(err => console.log(err));
+    } else return;
   }
 }
