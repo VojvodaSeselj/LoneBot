@@ -20,6 +20,7 @@ module.exports = {
       return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
     }
 
+    if (!args[0]) return;
     let opcija = args[0].toLowerCase();
 		if (opcija.includes("on")) {
       let emoji = message.emojis.find(emoji => emoji.name === "bar_chart");
