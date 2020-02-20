@@ -21,7 +21,7 @@ module.exports = {
       if (!args[0]) {
         return message.reply("You need to provide a member you want to give moderator role to!").then(m => m.delete(5000));
       }
-      
+
       const roleTo = await getMember(message, args[0]);
       if (!roleTo) {
         return message.reply("Couldn't find that member!").then(m => m.delete(5000));
@@ -31,8 +31,9 @@ module.exports = {
         return message.reply("Couldn't find that role!");
       }
       if (roleTo.roles.has(role.id)) {
-        return message.reply(`${roleTo} already have moderator role!`)
+        return message.reply(`${roleTo} already have moderator role!`);
       }
       roleTo.addRole(role.id);
+      message.reply(`You made ${roleTo} server moderator!`);
   }
 }
