@@ -26,7 +26,7 @@ module.exports = {
     if (!role) {
       return message.reply("You can only choose from colors above!");
     }
-    if (message.author.roles.some(boje)) {
+    if (message.member.roles.some(boje)) {
       return message.reply(`${rUser} you already got this color!`)
     }
 
