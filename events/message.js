@@ -9,6 +9,12 @@ const ms = require("ms")
 const adWords = [`discord.gg`, `.gg/`, `.gg /`, `. gg /`, `. gg/`, `discord .gg /`, `discord.gg /`, `discord .gg/`, `discord .gg`, `discord . gg`, `discord. gg`, `discord gg`, `discordgg`, `discord gg /`]
 
 module.exports = async (bot, message) => {
+    //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
+    if (message.channel.type === "dm") return;
+    if (message.author.bot) return;
+    if (!message.guild.me.hasPermission("SEND_MESSAGES")) return;
+    if (!message.member) message.member = message.guild.fetchMember(message.author);
+
     let guild = await Guild.findOne({
       Guild: message.guild.id
     });
@@ -45,13 +51,7 @@ module.exports = async (bot, message) => {
       });
     }
     guild.save().catch(err => console.log(err));
-
-    //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
-    if (message.channel.type === "dm") return;
-    if (message.author.bot) return;
-    if (!message.guild.me.hasPermission("SEND_MESSAGES")) return;
-    if (!message.member) message.member = message.guild.fetchMember(message.author);
-
+    
     let shop = await Shop.findOne({ Guild: message.guild.id });
     if (!shop) {
       shop = new Shop({
