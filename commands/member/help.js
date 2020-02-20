@@ -86,7 +86,8 @@ module.exports = {
               } catch (e) {
                   message.reply("Your DMs are locked. I cannot send you Admin commands.");
                 }
-            } else if (message.member.roles.some(r=>guild.ModeratorRole)) {
+            }
+            if (message.member.roles.some(r=>guild.ModeratorRole)) {
               try {
                   await message.author.send(membed);
               } catch (e) {
