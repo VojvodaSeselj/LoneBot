@@ -65,7 +65,7 @@ module.exports = {
                   .setFooter("Syntax: <> = required, [] = optional")
                   .setDescription(stripIndents`**Admin Commands**
                   **${guild.Prefix}ban <User> <Reason>** Ban user from server.
-                  **${guild.Prefix}unban <User ID> Unban user from server.
+                  **${guild.Prefix}unban <User ID>** Unban user from server.
                   **${guild.Prefix}kick <User> <Reason>** Kick user from server.
                   **${guild.Prefix}givemoney <User> <Amount> <Type>** Give money to user.
                   **${guild.Prefix}removemoney <User> <Amount> <Type>** Remove money from user.

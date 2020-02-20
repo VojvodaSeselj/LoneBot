@@ -24,13 +24,13 @@ module.exports = {
     let opcija = args[0].toLowerCase();
 		if (opcija.includes("on")) {
 			const parent = await message.guild.createChannel(`:bar_chart:Server Stats:bar_chart:`, "category")
-      const botc = await message.guild.createChannel(`Bot Count: ${message.guild.members.filter(member => member.user.bot).size}`)
+      const botc = await message.guild.createChannel(`Bot Count: ${message.guild.members.filter(member => member.user.bot).size}`, "text")
       botc = await botc.setParent(parent)
-      const userc = await message.guild.createChannel(`User Count: ${message.guild.members.filter(member => !member.user.bot).size}`)
+      const userc = await message.guild.createChannel(`User Count: ${message.guild.members.filter(member => !member.user.bot).size}`, "text")
       userc = await userc.setParent(parent)
-      const channelc = await message.guild.createChannel(`Channel Count: ${message.guild.channels.size}`)
+      const channelc = await message.guild.createChannel(`Channel Count: ${message.guild.channels.size}`, "text")
       channelc = await channelc.setParent(parent)
-      const rolec = await message.guild.createChannel(`Role Count: ${message.guild.roles.size}`)
+      const rolec = await message.guild.createChannel(`Role Count: ${message.guild.roles.size}`, "text")
       rolec = await rolec.setParent(parent)
 
 		} else if (opcija.includes("off")) {
