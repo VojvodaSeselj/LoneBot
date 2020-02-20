@@ -20,7 +20,7 @@ module.exports = async (bot, oldMessage, newMessage) => {
         .addField("Warned By", bot.user.tag)
         .addField("Reason", "Advertisement");
 
-    let logschannel = oldMessage.guild.channels.find(channel => channel.name === "moderation-logs");
+    let logschannel = oldMessage.guild.channels.find(channel => channel.name === guild.LogsChannel);
     if (!logschannel) return oldMessage.reply("Couldn't find reports channel.");
 
 

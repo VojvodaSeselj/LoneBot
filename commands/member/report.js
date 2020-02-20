@@ -30,7 +30,7 @@ module.exports = {
     let embed = new RichEmbed()
         .setColor("#00c3df")
         .setThumbnail(rUser.user.displayAvatarURL)
-        .setFooter(message.member.tag, message.author.displayAvatarURL)
+        .setFooter(message.author.tag, message.author.displayAvatarURL)
         .setDescription(stripIndents`**Reported User** ${rUser.user} **with ID** ${rUser.user.id}
         **Reported By** ${message.member} **with ID** ${message.member.id}
         **Time** ${message.createdAt}

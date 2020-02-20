@@ -80,13 +80,13 @@ module.exports = {
                   aembed.setFooter("Syntax: <> = required, [] = optional")
             message.channel.send(helpEmbed)
 
-            if (message.member.hasRole(r=>guild.AdminRole)) {
+            if (message.member.roles.some(r => r.name === guild.AdminRole)) {
               try {
                   await message.author.send(aembed);
               } catch (e) {
                   message.reply("Your DMs are locked. I cannot send you Admin commands.");
                 }
-            } else if (message.member.hasRole(r=>guild.ModeratorRole)) {
+            } else if (message.member.roles.some(r=> r.name === guild.ModeratorRole)) {
               try {
                   await message.author.send(membed);
               } catch (e) {

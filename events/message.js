@@ -51,7 +51,7 @@ module.exports = async (bot, message) => {
       });
     }
     guild.save().catch(err => console.log(err));
-    
+
     let shop = await Shop.findOne({ Guild: message.guild.id });
     if (!shop) {
       shop = new Shop({
@@ -73,7 +73,7 @@ module.exports = async (bot, message) => {
           .addField("Original message", message)
           .addField("Reason", "Advertisement");
 
-      let logschannel = message.guild.channels.find(channel => channel.name === "moderation-logs");
+      let logschannel = message.guild.channels.find(channel => channel.name === guild.LogsChannel);
       if (!logschannel) return message.reply("Couldn't find reports channel.");
 
 
