@@ -2,7 +2,7 @@ const { RichEmbed } = require("discord.js");
 const { promptMessage, getMember } = require("../../functions.js");
 const { stripIndents } = require("common-tags");
 const Guild = require("../../models/guild.js");
-const boje["light pink", "pink", "dark pink", "light orange", "orange", "dark orange", "light yellow", "yellow", "dark yellow", "light green", "green", "dark green", "light blue", "blue", "dark blue", "light purple", "purple", "dark purple", "light red", "red", "dark red"]
+const boje = ["light pink", "pink", "dark pink", "light orange", "orange", "dark orange", "light yellow", "yellow", "dark yellow", "light green", "green", "dark green", "light blue", "blue", "dark blue", "light purple", "purple", "dark purple", "light red", "red", "dark red"]
 
 module.exports = {
     name: "color",
