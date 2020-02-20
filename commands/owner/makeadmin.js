@@ -20,7 +20,6 @@ module.exports = {
       if (!args[0]) {
         return message.reply("You need to provide a member you want to give admin role to!").then(m => m.delete(5000));
       }
-      let role = args.slice(1).join(" ")
 
       const roleTo = await getMember(message, args[0]);
       if (!roleTo) {

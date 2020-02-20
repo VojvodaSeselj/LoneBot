@@ -21,8 +21,7 @@ module.exports = {
       if (!args[0]) {
         return message.reply("You need to provide a member you want to give moderator role to!").then(m => m.delete(5000));
       }
-      let role = args.slice(1).join(" ")
-
+      
       const roleTo = await getMember(message, args[0]);
       if (!roleTo) {
         return message.reply("Couldn't find that member!").then(m => m.delete(5000));
