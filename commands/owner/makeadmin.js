@@ -1,4 +1,5 @@
 const Guild = require("../../models/guild.js");
+const { getMember } = require("../../functions.js")
 
 module.exports = {
     name: "makeadmin",
@@ -30,8 +31,9 @@ module.exports = {
         return message.reply("Couldn't find that role!");
       }
       if (roleTo.roles.has(role.id)) {
-        return message.reply(`${roleTo} already have admin role!`)
+        return message.reply(`${roleTo} already have admin role!`);
       }
       roleTo.addRole(role.id);
+      message.reply(`You made ${roleTo} server admin!`);
   }
 }
