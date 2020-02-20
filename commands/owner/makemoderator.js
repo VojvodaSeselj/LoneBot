@@ -9,24 +9,31 @@ module.exports = {
     usage: "MakeModerator <User>",
     cooldown: 5,
     run: async (bot, message, args) => {
-  let guildid = message.guild.id;
-  let guild = await Guild.findOne({
-    Guild: guildid
-  });
-  if (message.deletable) message.delete()
+      let guildid = message.guild.id;
+      let guild = await Guild.findOne({
+        Guild: guildid
+      });
+      if (message.deletable) message.delete()
 
-  if (!message.member.hasPermission("ADMINISTRATOR")) {
-    return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
-  }
-  if (!args[0]) {
-    return message.reply("You need to provide member that you want to make a server moderator!")
-  }
-  let mUser = await getMember(message, args[0]);
+      if (!message.member.hasPermission("ADMINISTRATOR")) {
+        return message.reply("You do not have required permission to use this command!").then(m => m.delete(5000));
+      }
+      if (!args[0]) {
+        return message.reply("You need to provide a member you want to give moderator role to!").then(m => m.delete(5000));
+      }
+      let role = args.slice(1).join(" ")
 
-  let moderatorrole = message.guild.roles.find(role => role.name === guild.ModeratorRole);
-  if (!moderatorrole) {
-    return message.reply(`There is no Moderator role set up! Do ${guild.Prefix}setup to set it up!`)
-  }
-  await(mUser.addRole(moderatorrole.id));
+      const roleTo = await getMember(message, args[0]);
+      if (!roleTo) {
+        return message.reply("Couldn't find that member!").then(m => m.delete(5000));
+      }
+      const role = message.guild.roles.find((r) => r.name === guild.ModeratorRole);
+      if (!role) {
+        return message.reply("Couldn't find that role!");
+      }
+      if (roleTo.roles.has(role.id)) {
+        return message.reply(`${roleTo} already have moderator role!`)
+      }
+      roleTo.addRole(role.id);
   }
 }

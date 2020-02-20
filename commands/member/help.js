@@ -78,9 +78,40 @@ module.exports = {
                   **${guild.Prefix}mute <User> <Type> [Reason] [Time]** Mute a user.
                   **${guild.Prefix}clear <Number Of Lines>** Clear chat for specified number of lines.`)
                   aembed.setFooter("Syntax: <> = required, [] = optional")
+
+              let oembed = new RichEmbed()
+                  .setColor("#00c3df")
+                  .setFooter("Syntax: <> = required, [] = optional")
+                  .setDescription(stripIndents`**Owner Commands**
+                  **${guild.Prefix}setup** Configure bot for your server.
+                  **${guild.Prefix}setupinfo** See bot's configuration for your server.
+                  **${guild.Prefix}makeadmin <User>** Make user server admin.
+                  **${guild.Prefix}makemoderator <User>** Make user server moderator.
+                  **${guild.Prefix}addrole <User> <Role>** Add role to user.
+                  **${guild.Prefix}removerole <User> <Role>** Removes role from user.
+                  **${guild.Prefix}ban <User> <Reason>** Ban user from server.
+                  **${guild.Prefix}unban <User ID>** Unban user from server.
+                  **${guild.Prefix}kick <User> <Reason>** Kick user from server.
+                  **${guild.Prefix}givemoney <User> <Amount> <Type>** Give money to user.
+                  **${guild.Prefix}removemoney <User> <Amount> <Type>** Remove money from user.
+                  **${guild.Prefix}warn <User> <Reason>** Warn user with a reason.
+                  **${guild.Prefix}warnlevel <User>** Show how many warns user have.
+                  **${guild.Prefix}userinfo <User>** Show informations about user.
+                  **${guild.Prefix}setnick <User> <Nick>** Set a new nickname for user.
+                  **${guild.Prefix}deafen <User> <Reason>** Deafen user with a reason.
+                  **${guild.Prefix}undeafen <User>** Undeafen user.
+                  **${guild.Prefix}mute <User> <Type> [Reason] [Time]** Mute a user.
+                  **${guild.Prefix}clear <Number Of Lines>** Clear chat for specified number of lines.`)
+                  oembed.setFooter("Syntax: <> = required, [] = optional")
             message.channel.send(helpEmbed)
 
-            if (message.member.roles.some(r => r.name === guild.AdminRole)) {
+            if (message.member.hasPermission("ADMINISTRATOR")) {
+              try {
+                  await message.author.send(oembed);
+              } catch (e) {
+                  message.reply("Your DMs are locked. I cannot send you Owner commands.");
+                }
+            } else if (message.member.roles.some(r => r.name === guild.AdminRole)) {
               try {
                   await message.author.send(aembed);
               } catch (e) {

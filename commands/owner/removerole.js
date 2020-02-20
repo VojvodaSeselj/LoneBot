@@ -36,12 +36,12 @@ module.exports = {
     if (!rRole) {
       return message.reply("Couldn't find that role!");
     }
-    if (rUser.roles.has(rRole.id)) {
-      return message.reply(`${rUser} don't have that role!`)
+    if (roleTo.roles.has(rRole.id)) {
+      return message.reply(`${roleTo} don't have that role!`)
     }
 
     let embed = new RichEmbed()
-        .setAuthor(rUser.user.tag, rUser.user.avatarURL)
+        .setAuthor(roleTo.user.tag, roleTo.user.avatarURL)
         .setColor("#00c3df")
         .addField("Role Removed By", `${message.author}`)
         .addField("Role Removed", wrole);
@@ -52,14 +52,14 @@ module.exports = {
     }
     logsChannel.send(embed);
 
-    if (rUser.roles.has(rRole.id))
-    await(rUser.removeRole(rRole.id));
+    if (roleTo.roles.has(rRole.id))
+    await(roleTo.removeRole(rRole.id));
 
     const removerole = new RemoveRole({
         Guild: message.guild.id,
         RoleRemovedUser: {
-          Username: rUser.user.username,
-          ID: rUser.user.id,
+          Username: roleTo.user.username,
+          ID: roleTo.user.id,
         },
         RoleRemovedBy: {
           Username: message.author.username,
