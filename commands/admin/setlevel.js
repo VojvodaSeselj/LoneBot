@@ -45,6 +45,8 @@ module.exports = {
           ID: cUser
         })
       user.Level = level
+
+      message.reply(`You set ${cUser}'s level to ${level}!`);
     }
   }
 }
