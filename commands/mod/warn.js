@@ -61,11 +61,10 @@ module.exports = {
         ID: toWarn.user.id,
       },
     })
-    if (!warnings) let warnings = 0
 
     const warn = new Warn({
         Guild: message.guild.id,
-        ID: warnings.lenght + 1,
+        ID: warnings.length + 1,
         WarnedUser: {
           ID: toWarn.user.id,
         },
