@@ -55,9 +55,16 @@ module.exports = {
     logsChannel.send(embed);
     message.delete();
 
+    let warnings = await Warn.find({
+      Guild: guildid,
+      WarnedUser: {
+        ID: wUser.user.id,
+      },
+    })
+
     const warn = new Warn({
         Guild: message.guild.id,
-        ID: +1,
+        ID: warnings.lenght +1,
         WarnedUser: {
           ID: toWarn.user.id,
         },
