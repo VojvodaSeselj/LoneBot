@@ -1,3 +1,4 @@
+const { RichEmbed } = require("discord.js");
 const Warn = require("../../models/warn.js");
 const Guild = require("../../models/guild.js");
 
