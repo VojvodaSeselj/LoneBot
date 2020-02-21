@@ -32,6 +32,6 @@ module.exports = {
       },
     })
 
-    message.reply(`<@${wUser.id}> has ${warnings.length} warnings.`)
+    message.reply(`${warnings}`)
   }
 }
