@@ -31,7 +31,7 @@ module.exports = {
         ID: wUser.user.id,
       },
     }).sort([
-      ["WarnedBy", "Reason"]
+      ["WarnedBy", "Reason", "descending"]
     ]).exec((err, res) => {
       if(err) console.log(err);
 
