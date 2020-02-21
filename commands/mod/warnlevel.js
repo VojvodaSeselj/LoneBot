@@ -24,12 +24,6 @@ module.exports = {
     if (!wUser) {
       return message.channel.send("User not found!");
     }
-    User.find({
-      Guild: message.guild.id
-    }).sort([
-      ["Cash", "descending"]
-    ]).exec((err, res) => {
-      if(err) console.log(err);
 
     Warn.find({
       Guild: guildid,
@@ -49,11 +43,11 @@ module.exports = {
         for (i = 0; i < res.length; i++) {
           let member = message.guild.members.get(res[i].ID) || "User Left"
           if (member === "User Left") {
-            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
-            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`)
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`)
           } else {
-            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
-            embed.addField(`${i + 1}. ${member.user.username}`, `**Reason**: ${res[i].Reason}`);
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].WarnedBy.Username}`)
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Reason**: ${res[i].Reason}`)
           }
         }
       }else{
@@ -61,11 +55,11 @@ module.exports = {
         for (i = 0; i < 10; i++) {
           let member = message.guild.members.get(res[i].ID) || "User Left"
           if (member === "User Left") {
-            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
-            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`)
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`)
           } else {
-            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].Cash}`);
-            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].Cash}`)
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`)
           }
         }
       }
