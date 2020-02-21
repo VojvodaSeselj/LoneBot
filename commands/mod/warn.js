@@ -64,7 +64,7 @@ module.exports = {
 
     const warn = new Warn({
         Guild: message.guild.id,
-        ID: warnings.lenght,
+        ID: warnings.lenght + 1,
         WarnedUser: {
           ID: toWarn.user.id,
         },
