@@ -58,7 +58,7 @@ module.exports = {
     let warnings = await Warn.find({
       Guild: message.guild.id,
       WarnedUser: {
-        ID: wUser.user.id,
+        ID: toWarn.user.id,
       },
     })
 
