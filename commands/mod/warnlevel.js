@@ -25,6 +25,9 @@ module.exports = {
       return message.channel.send("User not found!");
     }
 
+    let embed = new RichEmbed()
+      .setTitle("Warns")
+
     Warn.find({
       Guild: guildid,
       WarnedUser: {
