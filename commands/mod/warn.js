@@ -56,7 +56,7 @@ module.exports = {
     message.delete();
 
     let warnings = await Warn.find({
-      Guild: guildid,
+      Guild: message.guild.id,
       WarnedUser: {
         ID: wUser.user.id,
       },
