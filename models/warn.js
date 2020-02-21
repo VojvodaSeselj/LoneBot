@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 const warnSchema = mongoose.Schema({
     Guild: String,
+    ID: Number,
     WarnedUser: {
-      Username: String,
       ID: String,
     },
     WarnedBy: {

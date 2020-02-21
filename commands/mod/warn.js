@@ -57,8 +57,8 @@ module.exports = {
 
     const warn = new Warn({
         Guild: message.guild.id,
+        ID: +1,
         WarnedUser: {
-          Username: toWarn.user.username,
           ID: toWarn.user.id,
         },
         WarnedBy: {
@@ -67,25 +67,17 @@ module.exports = {
         },
         Reason: reason,
         Time: message.createdAt
-
     });
 
     warn.save()
         .then(result => console.log(result))
         .catch(err => console.log(err));
 
-    let warnings = await Warn.find({
-        Guild: message.guild.id,
-        WarnedUser: {
-          ID: toWarn.user.id 
-        },
-    })
-    console.log(warnings);
 
-    if (warnings.length < 3) {
-      message.channel.send(`<@${toWarn.id}> you have been warned for **${reason}**,be careful because ${3 - warnings.length} more warnings will get you banned!`);
+    if (warn.ID < 3) {
+      message.channel.send(`<@${toWarn.id}> you have been warned for **${reason}**,be careful because ${3 - warn.ID} more warnings will get you banned!`);
     }
-    if (warnings.length >= 3) {
+    if (warn.ID >= 3) {
         if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
           return message.reply("I do not have permission to ban members for being warned 3 times.").then(m => m.delete(5000));
         } else if (message.guild.me.hasPermission("BAN_MEMBERS")) {
