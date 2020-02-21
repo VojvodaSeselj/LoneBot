@@ -76,11 +76,13 @@ module.exports = {
 
     let warnings = await Warn.find({
         Guild: message.guild.id,
-        WarnedUser: { ID: toWarn.id },
+        WarnedUser: {
+          ID: toWarn.user.id 
+        },
     })
     console.log(warnings);
 
-    if (warnings.length <= 2) {
+    if (warnings.length < 3) {
       message.channel.send(`<@${toWarn.id}> you have been warned for **${reason}**,be careful because ${3 - warnings.length} more warnings will get you banned!`);
     }
     if (warnings.length >= 3) {
