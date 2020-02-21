@@ -24,14 +24,50 @@ module.exports = {
     if (!wUser) {
       return message.channel.send("User not found!");
     }
+    User.find({
+      Guild: message.guild.id
+    }).sort([
+      ["Cash", "descending"]
+    ]).exec((err, res) => {
+      if(err) console.log(err);
 
-    let warnings = await Warn.find({
+    Warn.find({
       Guild: guildid,
       WarnedUser: {
         ID: wUser.user.id,
       },
-    })
+    }).sort([
+      ["WarnedBy", "Reason"]
+    ]).exec((err, res) => {
+      if(err) console.log(err);
 
-    message.reply(`${warnings}`)
+      if(!res){
+        embed.setColor("#00c3df");
+        embed.addField("Error", "This member was never warned!!");
+      }else if(res.length < 10){
+        embed.setColor("#00c3df");
+        for (i = 0; i < res.length; i++) {
+          let member = message.guild.members.get(res[i].ID) || "User Left"
+          if (member === "User Left") {
+            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+          } else {
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Reason**: ${res[i].Reason}`);
+          }
+        }
+      }else{
+        embed.setColor("#00c3df");
+        for (i = 0; i < 10; i++) {
+          let member = message.guild.members.get(res[i].ID) || "User Left"
+          if (member === "User Left") {
+            embed.addField(`${i + 1}. ${member}`, `**Warned By**: ${res[i].WarnedBy.Username}`);
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+          } else {
+            embed.addField(`${i + 1}. ${member.user.username}`, `**Warned By**: ${res[i].Cash}`);
+            embed.addField(`${i + 1}. ${member}`, `**Reason**: ${res[i].Reason}`);
+          }
+        }
+      }
   }
 }
