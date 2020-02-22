@@ -20,7 +20,7 @@ module.exports = {
         User.find({
           Guild: message.guild.id
         }).sort([
-          ["Cash", "descending"]
+          ["Level", "descending"]
         ]).exec((err, res) => {
           if(err) console.log(err);
 
@@ -32,9 +32,9 @@ module.exports = {
             for (i = 0; i < res.length; i++) {
               let member = message.guild.members.get(res[i].ID) || "User Left"
               if (member === "User Left") {
-                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash}`);
+                embed.addField(`${i + 1}. ${member}`, `**Level**: ${res[i].Level}`);
               } else {
-                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash}`);
+                embed.addField(`${i + 1}. ${member.user.username}`, `**Level**: ${res[i].Level}`);
               }
             }
           }else{
@@ -42,9 +42,9 @@ module.exports = {
             for (i = 0; i < 10; i++) {
               let member = message.guild.members.get(res[i].ID) || "User Left"
               if (member === "User Left") {
-                embed.addField(`${i + 1}. ${member}`, `**Total**: ${res[i].Cash}`);
+                embed.addField(`${i + 1}. ${member}`, `**Level**: ${res[i].Level}`);
               } else {
-                embed.addField(`${i + 1}. ${member.user.username}`, `**Total**: ${res[i].Cash}`);
+                embed.addField(`${i + 1}. ${member.user.username}`, `**Level**: ${res[i].Level}`);
               }
             }
           }
