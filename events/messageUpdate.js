@@ -12,17 +12,16 @@ module.exports = async (bot, oldMessage, newMessage) => {
 
   //Filter za reklame
   if (adWords.some(word => newMessage.content.toLowerCase().includes(word))) {
-    let wUser = newMessage.author;
 
     let warnembed = new RichEmbed()
-        .setAuthor(newMessage.author.tag, newMessage.author.avatarURL)
+        .setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
         .setColor("#6b0808")
         .addField("Warned By", bot.user.username)
-        .addField("Original message", newMessage)
+        .addField("Original message", oldMessage)
         .addField("Reason", "Advertisement");
 
-    let logschannel = newMessage.channels.find(channel => channel.name === guild.LogsChannel);
-    if (!logschannel) return newMessage.reply("Couldn't find reports channel.");
+    let logschannel = oldMessage.guild.channels.find(channel => channel.name === guild.LogsChannel);
+    if (!logschannel) return oldMessage.reply("Couldn't find reports channel.");
 
 
     newMessage.delete().catch(O_o => {});
@@ -55,14 +54,14 @@ module.exports = async (bot, oldMessage, newMessage) => {
 
 
     if (warn.ID < 3) {
-      newMessage.channel.send(`<@${newMessage.author.id}> you have been warned for **Advertisement**,be careful because ${3 - warn.ID} more warnings will get you banned!`);
+      oldMessage.channel.send(`<@${newMessage.author.id}> you have been warned for **Advertisement**,be careful because ${3 - warn.ID} more warnings will get you banned!`);
     }
     if (warn.ID >= 3) {
-        if (!newMessage.guild.me.hasPermission("BAN_MEMBERS")) {
-          return newMessage.reply("I do not have permission to ban members for being warned 3 times.").then(m => m.delete(5000));
-        } else if (newMessage.guild.me.hasPermission("BAN_MEMBERS")) {
-        newMessage.guild.member(newMessage.author.id).ban("Warned too many times");
-        newMessage.channel.send(`<@${newMessage.author.id}> has been banned for getting warned third time!`)
+        if (!oldMessage.guild.me.hasPermission("BAN_MEMBERS")) {
+          return oldMessage.reply("I do not have permission to ban members for being warned 3 times.").then(m => m.delete(5000));
+        } else if (oldMessage.guild.me.hasPermission("BAN_MEMBERS")) {
+        oldMessage.guild.member(oldMessage.author.id).ban("Warned too many times");
+        oldMessage.channel.send(`<@${oldMessage.author.id}> has been banned for getting warned third time!`)
       }
     }
     }
