@@ -2,6 +2,7 @@ const { RichEmbed } = require("discord.js");
 const fs = require("fs");
 const adWords = [`discord.gg`, `.gg/`, `.gg /`, `. gg /`, `. gg/`, `discord .gg /`, `discord.gg /`, `discord .gg/`, `discord .gg`, `discord . gg`, `discord. gg`, `discord gg`, `discordgg`, `discord gg /`]
 const Warn = require("../models/warn.js");
+const Guild = require("../models/guild.js");
 
 module.exports = async (bot, oldMessage, newMessage) => {
   //Proverava da li je autor poruke bot ili je poruka poslata u dm botu i obustavlja operaciju.
@@ -9,6 +10,43 @@ module.exports = async (bot, oldMessage, newMessage) => {
   if (newMessage.author.bot) return;
   if (newMessage.content.startsWith("!")) return
   if (newMessage.content.startsWith("?")) return
+
+  let guild = await Guild.findOne({
+    Guild: oldMessage.guild.id
+  });
+  if (!guild) {
+    guild = new Guild({
+      Guild: oldMessage.guild.id,
+      AdminRole: "",
+      ModeratorRole: "",
+      Prefix: "sk!",
+      Nsfw: false,
+      Xp: true,
+      Verify: {
+        Enabled: false,
+        VerifyRole: "",
+        VerifiedRole: "",
+        Channel: "",
+        LogsChannel: "",
+      },
+      Welcome: {
+        Enabled: false,
+        Channel: "",
+        Message: "",
+      },
+      Leave: {
+        Enabled: false,
+        Channel: "",
+        Message: "",
+      },
+      AutoRoles: {
+        Enabled: false,
+        Roles: [],
+      },
+      LogsChannel: ""
+    });
+  }
+  guild.save().catch(err => console.log(err));
 
   //Filter za reklame
   if (adWords.some(word => newMessage.content.toLowerCase().includes(word))) {
