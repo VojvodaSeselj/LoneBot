@@ -21,7 +21,7 @@ module.exports = async (bot, oldMessage, newMessage) => {
         .addField("Original message", newMessage)
         .addField("Reason", "Advertisement");
 
-    let logschannel = newMessage.guild.channels.find(channel => channel.name === guild.LogsChannel);
+    let logschannel = newMessage.channels.find(channel => channel.name === guild.LogsChannel);
     if (!logschannel) return newMessage.reply("Couldn't find reports channel.");
 
 
