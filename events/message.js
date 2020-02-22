@@ -64,54 +64,59 @@ module.exports = async (bot, message) => {
     const voiceMute = message.guild.roles.find(role => role.name === "Voice Muted") || message.guild.createRole({ name:"Voice Muted", color:"#27272b", permissions:[] });
     //Filter za reklame
     if (adWords.some(word => message.content.toLowerCase().includes(word))) {
-      let wUser = message.author;
 
-      let warnembed = new RichEmbed()
-          .setAuthor(message.author.tag, message.author.avatarURL)
-          .setColor("#6b0808")
-          .addField("Warned By", bot.user.username)
-          .addField("Original message", message)
-          .addField("Reason", "Advertisement");
+    let warnembed = new RichEmbed()
+        .setAuthor(message.author.tag, message.author.avatarURL)
+        .setColor("#6b0808")
+        .addField("Warned By", bot.user.username)
+        .addField("Original message", message)
+        .addField("Reason", "Advertisement");
 
-      let logschannel = message.guild.channels.find(channel => channel.name === guild.LogsChannel);
-      if (!logschannel) return message.reply("Couldn't find reports channel.");
+    let logschannel = message.guild.channels.find(channel => channel.name === guild.LogsChannel);
+    if (!logschannel) return message.reply("Couldn't find reports channel.");
 
 
-      message.delete();
-      logschannel.send(warnembed);
+    message.delete();
+    logschannel.send(warnembed);
 
-      const warn = new Warn({
-          Guild: message.guild.id,
-          WarnedUser: {
-            Username: message.author.username,
-            ID: message.author.id,
-          },
-          WarnedBy: {
-            Username: bot.user.username,
-            ID: "586263579817279504",
-          },
-          Reason: "Advertisement",
-          Time: message.createdAt
+    let warnings = await Warn.find({
+      Guild: message.guild.id,
+      WarnedUser: {
+        ID: message.author.id,
+      },
+    })
 
-      });
+    const warn = new Warn({
+        Guild: message.guild.id,
+        ID: warnings.length + 1,
+        WarnedUser: {
+          ID: message.author.id,
+        },
+        WarnedBy: {
+          Username: bot.user.username,
+          ID: bot.user.id,
+        },
+        Reason: "Advertisement",
+        Time: message.createdAt
+    });
 
-      warn.save().catch(err => console.log(err));
+    warn.save()
+        .then(result => console.log(result))
+        .catch(err => console.log(err));
 
-          let warnings = await Warn.find({
-              Guild: message.guild.id,
-              WarnedUser: {
-                Username: message.author.username,
-                ID: message.author.id,
-              },
-          })
-          message.channel.send(`<@${message.author.id}> you have been warned for **Advertisement**,be careful because ${3 - warnings.length} more warnings will get you banned!`)
 
-      if (warnings.length === 3) {
-          message.guild.member(wUser).ban("Warned too many times");
-          message.channel.send(`<@${message.author.id}> has been banned for getting warned third time!`)
-          message.delete(0);
+    if (warn.ID < 3) {
+      message.channel.send(`<@${toWarn.id}> you have been warned for **Advertisement**,be careful because ${3 - warn.ID} more warnings will get you banned!`);
+    }
+    if (warn.ID >= 3) {
+        if (!message.guild.me.hasPermission("BAN_MEMBERS")) {
+          return message.reply("I do not have permission to ban members for being warned 3 times.").then(m => m.delete(5000));
+        } else if (message.guild.me.hasPermission("BAN_MEMBERS")) {
+        message.guild.member(toWarn).ban("Warned too many times");
+        message.channel.send(`<@${toWarn.id}> has been banned for getting warned third time!`)
       }
     }
+
     //Proverava da li u kanalu newbie-verify neko pise bilo sta osim ${guild.Prefix}verify i ako da brise poruku
     if (message.channel.name === guild.VerifyChannel) {
       if (message.content !== `${guild.Prefix}verify`) return message.delete();
