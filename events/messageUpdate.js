@@ -55,7 +55,7 @@ module.exports = async (bot, oldMessage, newMessage) => {
         .setAuthor(oldMessage.author.tag, oldMessage.author.avatarURL)
         .setColor("#6b0808")
         .addField("Warned By", bot.user.username)
-        .addField("Original message", oldMessage)
+        .addField("Edited message", newMessage)
         .addField("Reason", "Advertisement");
 
     let logschannel = oldMessage.guild.channels.find(channel => channel.name === guild.LogsChannel);
