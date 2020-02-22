@@ -222,5 +222,6 @@ module.exports = async (bot, message) => {
     } else if (cd && Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now())) >= 1) {
         return message.reply(`You need to wait **${Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now()) / 1000)}** seconds before using this command again!`).then(message.delete(2000))
      }
+    }
   }
 }
