@@ -114,9 +114,9 @@ module.exports = async (bot, message) => {
         } else if (message.guild.me.hasPermission("BAN_MEMBERS")) {
         message.guild.member(toWarn).ban("Warned too many times");
         message.channel.send(`<@${toWarn.id}> has been banned for getting warned third time!`)
+        }
       }
     }
-
     //Proverava da li u kanalu newbie-verify neko pise bilo sta osim ${guild.Prefix}verify i ako da brise poruku
     if (message.channel.name === guild.VerifyChannel) {
       if (message.content !== `${guild.Prefix}verify`) return message.delete();
@@ -199,7 +199,6 @@ module.exports = async (bot, message) => {
     if (cmd.length === 0) return;
     let command = bot.commands.get(cmd);
     if (!message.content.startsWith(guild.Prefix)) return;
-    command.run(bot, message, args)
 
     if (!command) command = await bot.commands.get(bot.aliases.get(cmd));
       if (command) {
@@ -223,6 +222,5 @@ module.exports = async (bot, message) => {
     } else if (cd && Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now())) >= 1) {
         return message.reply(`You need to wait **${Math.ceil((cd.Used + (cd.Cooldown * 1000) - Date.now()) / 1000)}** seconds before using this command again!`).then(message.delete(2000))
      }
-    }
   }
 }
