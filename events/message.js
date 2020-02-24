@@ -198,7 +198,8 @@ module.exports = async (bot, message) => {
     let cmd = args.shift().toLowerCase();
     if (cmd.length === 0) return;
     let command = bot.commands.get(cmd);
-    //if (!message.content.startsWith(guild.Prefix)) return;
+    if (!message.content.startsWith(guild.Prefix)) return;
+    command.run(bot, message, args)
 
     if (!command) command = await bot.commands.get(bot.aliases.get(cmd));
       if (command) {
