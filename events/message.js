@@ -118,7 +118,7 @@ module.exports = async (bot, message) => {
       }
     }
     //Proverava da li u kanalu newbie-verify neko pise bilo sta osim ${guild.Prefix}verify i ako da brise poruku
-    if (message.channel.name === guild.VerifyChannel) {
+    if (message.channel.name === guild.Verify.Channel) {
       if (message.content !== `${guild.Prefix}verify`) return message.delete();
     }
     //Definisemo levle up nagrade
