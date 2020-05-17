@@ -36,4 +36,5 @@ bot.guilds.forEach(g => {
             ct++;
         });
     });
+  }
 }
