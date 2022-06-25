@@ -28,7 +28,7 @@
     "moment-duration-format": "^2.3.2",
     "mongoose": "^5.7.7",
     "ms": "^2.1.2",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "nodemon": "^1.19.2",
     "opusscript": "0.0.6",
     "profanities": "^2.11.0",
